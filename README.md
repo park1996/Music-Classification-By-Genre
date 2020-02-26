@@ -2,7 +2,7 @@
 
 
 ## Packages:
-Python 3, Scipy, Soundfile, Numpy, Matplotlib, Pandas, Librosa
+Python 3, SciPy, Soundfile, Numpy, Matplotlib
 
 
 ## Dataset:
