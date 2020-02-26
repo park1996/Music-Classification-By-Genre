@@ -1,4 +1,5 @@
-import soundfile as sf
+from scipy.io import wavfile as wav
+import matplotlib.pyplot as plt
 
 class audio_preprocessor:
     def __init__(self):
@@ -9,8 +10,8 @@ class audio_preprocessor:
         ''' input_path - input wav file '''
         ''' output_path - output wav file '''
         nbits = 32
-        x, samplerate = sf.read(input_path)
-        print (x.dtype)
+        samplerate, x = wav.read(input_path)
+
         if x.dtype == "float32":
             audio = x
         else:
@@ -33,8 +34,12 @@ class audio_preprocessor:
         if audio.ndim > 1:
             audio = audio[:, 0]
 
-        sf.write(output_path, x, samplerate); 
+        wav.write(output_path, samplerate, audio);
 
+        fig, axs = plt.subplots(1,2)
+        axs[0].plot(x)
+        axs[1].plot(audio)
+        plt.show()
         return samplerate, audio
 
     def block_audio(x, blockSize, hopSize, fs):
