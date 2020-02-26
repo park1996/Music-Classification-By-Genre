@@ -4,19 +4,25 @@ class audio_preprocessor:
     def __init__(self):
         ''' Constructor for this class '''
 
-    def audio_read(self, path):
-        samplerate, x = sf.read(path)
+    def audio_read(self, input_path, output_path):
+        ''' Read audio wav fie and normalize to [-1, 1)  '''
+        ''' input_path - input wav file '''
+        ''' output_path - output wav file '''
+        nbits = 32
+        x, samplerate = sf.read(input_path)
+        print (x.dtype)
         if x.dtype == "float32":
             audio = x
         else:
-        # change range to [-1,1)
-
+            # change range to [-1,1)
             if x.dtype == "uint8":
                 nbits = 8
             elif x.dtype == "int16":
                 nbits = 16
             elif x.dtype == "int32":
                 nbits = 32
+            elif x.dtype == "float64":
+                nbits = 64
 
             audio = x / float(2 ** (nbits - 1))
 
@@ -26,6 +32,8 @@ class audio_preprocessor:
 
         if audio.ndim > 1:
             audio = audio[:, 0]
+
+        sf.write(output_path, x, samplerate); 
 
         return samplerate, audio
 
