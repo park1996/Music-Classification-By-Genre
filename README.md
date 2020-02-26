@@ -6,7 +6,7 @@ Python 3, Soundfile, Numpy, Pandas, Librosa
 
 
 ## Dataset:
-* The FMA small dataset was used for this project: https://github.com/mdeff/fma. 
+* The Free Music Archive (FMA) dataset was used for this project: https://github.com/mdeff/fma. 
 * The dataset consists of audio from 8000 songs + metadata with features like Mel-Frequency Cepstral Coefficients
 (MFCC), Tempo, Root Mean Square Energy (RMSE), and many more.
 * Please download the small compressed dataset file (fma_small.zip) which is 7.2 GB.
