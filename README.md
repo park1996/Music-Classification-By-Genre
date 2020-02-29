@@ -12,7 +12,7 @@ Python 3, SciPy, Librosa, Numpy, Matplotlib
 * It's excellent for Music Genre Recognition (MGR) because it contains fine genre information including sub-genres
 
 ### Details:
-* The datset consists of 30 mp3-encoded clips from 8000 songs in 8 genres
+* The datset consists of 30 second clips from 8000 songs in 8 genres
 * The metadata is in csv files which contains various information about the songs such as artist, genre, and record date
 * Many pre-computed features are part of the meta data like Mel-Frequency Cepstral Coefficients (MFCC) and Chroma
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
