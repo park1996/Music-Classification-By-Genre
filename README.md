@@ -2,8 +2,17 @@
 
 
 ## Packages:
-Python 3, SciPy, Librosa, Numpy, Matplotlib
+Python 3, SciPy, LibROSA , Numpy, Matplotlib, seaborn, dotenv
 
+## Installation:
+```
+$ sudo apt-get install python3
+$ py -3 -m pip install numpy
+$ py -3 -m pip install seaborn
+$ py -3  -m pip install matplotlib
+$ py -3  -m pip install scipy
+$ py -3 -m pip install python-dotenv
+```
 
 ## Dataset:
 ### Brief
