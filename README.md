@@ -2,13 +2,14 @@
 
 
 ## Packages:
-Python 3, SciPy, Soundfile, Numpy, Matplotlib
+Python 3, SciPy, Librosa, Numpy, Matplotlib
 
 
 ## Dataset:
 ### Brief
 * The Free Music Archive (FMA) dataset was used for this project: https://github.com/mdeff/fma
-* The dataset consists of legally free songs and rich metadata 
+* The dataset consists of thousands of free songs and rich metadata 
+* It's excellent for Music Genre Recognition (MGR) because it contains fine genre information including sub-genres
 
 ### Details:
 * The datset consists of 30 second clips from 8000 songs in 8 genres
