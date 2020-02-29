@@ -7,11 +7,11 @@ Python 3, SciPy, LibROSA , Numpy, Matplotlib, seaborn, dotenv
 ## Installation:
 ```
 $ sudo apt-get install python3
-$ py -3 -m pip install numpy
-$ py -3 -m pip install seaborn
-$ py -3  -m pip install matplotlib
-$ py -3  -m pip install scipy
-$ py -3 -m pip install python-dotenv
+$ pip3 install numpy
+$ pip3 install seaborn
+$ pip3 install matplotlib
+$ pip3 install scipy
+$ pip3 install python-dotenv
 ```
 
 ## Dataset:
