@@ -1,4 +1,4 @@
-''' The following code was taken from https://github.com/mdeff/fma/blob/master/utils.py '''
+''' The following code was taken from the FMA project: https://github.com/mdeff/fma/blob/master/utils.py '''
 
 import dotenv
 import pydot
