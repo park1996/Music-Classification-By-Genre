@@ -1,4 +1,4 @@
-# Music-Classification-Genre
+# Music Classification by Genre
 
 
 ## Packages:
