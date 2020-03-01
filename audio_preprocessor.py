@@ -6,7 +6,7 @@ class audio_preprocessor:
         ''' Constructor for this class '''
 
     def audio_read(self, input_path, output_path):
-        ''' Read audio wav fie and normalize to [-1, 1)  '''
+        ''' Read audio wav file and normalize to [-1, 1)  '''
         ''' input_path - input wav file '''
         ''' output_path - output wav file '''
         nbits = 32
