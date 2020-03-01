@@ -69,10 +69,10 @@ class feature_extractor:
         self.genres = utils.load(self.GENRE_FILE)
         print('Genres:' + str(self.genres))
 
-        self.small_dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
-        self.training_dataset = self.small_dataset[self.small_dataset[self.SET, self.SPLIT] == self.TRAINING]
-        self.validation_dataset = self.small_dataset[self.small_dataset[self.SET, self.SPLIT] == self.VALIDATION]
-        self.test_dataset = self.small_dataset[self.small_dataset[self.SET, self.SPLIT] == self.TEST]
+        self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
+        self.training_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TRAINING]
+        self.validation_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.VALIDATION]
+        self.test_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TEST]
 
         #self.features = utils.load(self.FEATURES_FILE)
         #np.testing.assert_array_equal(self.features.index, self.tracks.index)
