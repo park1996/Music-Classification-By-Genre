@@ -2,12 +2,15 @@
 
 
 ## Packages:
-Python 3, SciPy, LibROSA , Numpy, Matplotlib, seaborn, dotenv, pydot
+Python 3.6+, SciPy, LibROSA , Numpy, Matplotlib, seaborn, dotenv, pydot
 
 ## Installation:
 ```
-$ sudo apt-get install python3
-$ pip3 install numpy seaborn matplotlib scipy python-dotenv pydot
+# Install Python 3.6 or greater
+$ sudo apt-get install python3.6
+
+# Setup environment
+$ ./setup_env.sh
 ```
 
 ## Dataset:
