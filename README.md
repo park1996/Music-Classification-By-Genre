@@ -23,7 +23,7 @@ $ ./setup_env.sh
 * The metadata is in csv files which contains various information about the songs such as artist, genre, and record date
 * Many pre-computed features are part of the meta data like Mel-Frequency Cepstral Coefficients (MFCC) and Chroma
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
-* The dataset can be downloaded here: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip - size is 7.2 GB
+* The dataset can be downloaded here: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip) - size is 7.2 GB
 * The meta-data for all tracks can be downloaded here: [fma_metadata.zip](https://os.unil.cloud.switch.ch/fma/fma_metadata.zip) - size is 342 MB
 
 
