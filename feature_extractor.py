@@ -1,4 +1,3 @@
-from enum import Enum
 import os
 import IPython.display as ipd
 import numpy as np
@@ -9,7 +8,12 @@ import sklearn as skl
 import sklearn.utils, sklearn.preprocessing, sklearn.decomposition, sklearn.svm
 import librosa
 import librosa.display
+import ast
+import warnings
+
+from enum import Enum
 from fma_utils import utils
+from pandas.api.types import CategoricalDtype
 
 class feature_type(Enum):
     CHROMA = 1
@@ -43,9 +47,10 @@ class feature_extractor:
         self.FEATURES_FILE = os.path.join(self.META_DATA_DIR, 'features.csv')
 
         print('Loading the following metadata files:')
-        print('\t' + self.FEATURES_FILE)        
         print('\t' + self.TRACKS_FILE)
         print('\t' + self.GENRE_FILE)
+        print('\t' + self.FEATURES_FILE)
+        print('\n')
 
         # Dataframe keys
         self.TRACK = 'track'
@@ -59,23 +64,101 @@ class feature_extractor:
         self.SPLIT = 'split'
         self.SET = 'set'
         self.TEST = 'test'
+        self.FEATURES = 'features'
         self.GENRES = 'genres'
+        self.TRACKS = 'tracks'
 
         self.__load_data()
 
     def __load_data(self):
-        ''' Load metadata and features '''
-        self.tracks = utils.load(self.TRACKS_FILE)
-        self.genres = utils.load(self.GENRE_FILE)
-        print('Genres:' + str(self.genres))
+        ''' Load datasets and features '''
 
+        # Load tracks and genres dataset
+        self.tracks = self.load(self.TRACKS_FILE)
+        self.genres = self.load(self.GENRE_FILE)
+
+        # Parse training, validation, and test datasets
         self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
         self.training_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TRAINING]
         self.validation_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.VALIDATION]
         self.test_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TEST]
 
-        #self.features = utils.load(self.FEATURES_FILE)
-        #np.testing.assert_array_equal(self.features.index, self.tracks.index)
+        # Load features last
+        self.features = self.load(self.FEATURES_FILE)
+
+        # Sanity check: check if number of feature rows is equal to the dataset rows
+        np.testing.assert_array_equal(self.features.shape[0], self.dataset.shape[0])
+
+
+    def load(self, filepath):
+        ''' The following method was taken from the FMA repository and heavily modified.'''
+        ''' Original source code: ttps://github.com/mdeff/fma/blob/master/utils.py '''
+
+        filename = os.path.basename(filepath)
+
+        if self.FEATURES in filename:
+                print ('Loading features...')
+
+                CHUNK_SIZE = 5000
+                self.features = pd.DataFrame()
+                ids = []
+                ids.extend(self.get_training_dataset_song_ids())
+                ids.extend(self.get_validation_dataset_song_ids())
+                ids.extend(self.get_test_dataset_song_ids())
+                ids = list(map(str, ids))
+
+                for file_chunk in pd.read_csv(filepath, low_memory=False, chunksize=CHUNK_SIZE):
+                    temp = file_chunk.loc[file_chunk['feature'].isin(ids)]
+                    if temp.shape[0] > 0:
+                        if self.features.shape[0] == 0:
+                            self.features = temp
+                        else:
+                            self.features = self.features.append(temp)
+
+                print ('Loaded features...')
+
+                return self.features
+
+        if self.GENRES in filename:
+                print ('Loading genres...')
+
+                genres = pd.read_csv(filepath, index_col=0)
+
+                print ('Loaded genres...')
+
+
+        if self.TRACKS in filename:
+            print ('Loading tracks...')
+
+            tracks = pd.read_csv(filepath, index_col=0, header=[0, 1])
+
+            COLUMNS = [('track', 'tags'), ('album', 'tags'), ('artist', 'tags'),
+                               ('track', 'genres'), ('track', 'genres_all')]
+
+            for column in COLUMNS:
+                    tracks[column] = tracks[column].map(ast.literal_eval)
+ 
+            COLUMNS = [('track', 'date_created'), ('track', 'date_recorded'),
+                               ('album', 'date_created'), ('album', 'date_released'),
+                               ('artist', 'date_created'), ('artist', 'active_year_begin'),
+                               ('artist', 'active_year_end')]
+
+            for column in COLUMNS:
+                    tracks[column] = pd.to_datetime(tracks[column])
+
+            SUBSETS = ('small', 'medium', 'large')
+
+            tracks['set', 'subset'] = tracks['set', 'subset'].astype(
+                       'category', CategoricalDtype(categories=SUBSETS, ordered=True)).cat.as_ordered()
+
+            COLUMNS = [('track', 'license'), ('artist', 'bio'),
+                               ('album', 'type'), ('album', 'information')]
+            for column in COLUMNS:
+                    tracks[column] = tracks[column].astype('category')
+
+            print ('Loaded tracks...')
+
+            return tracks
 
     def get_training_dataset_song_ids(self):
         ''' Get all song ids in training set '''
@@ -103,11 +186,6 @@ class feature_extractor:
             genre_list.append(self.genres.loc[i][self.TITLE])
         
         return genre_list
-
-    def get_track_id(self, filename):
-        ''' Get filename of track '''
-        ''' track_id - unique ID of the song in dataset ''' 
-        pass
 
     def get_filename(self, track_id):
         ''' Get filename of track '''
