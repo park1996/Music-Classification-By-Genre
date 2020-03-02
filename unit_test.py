@@ -10,7 +10,7 @@ from feature_extractor import statistic_type
 extractor = feature_extractor()
 
 def print_dataset_info(dataset):
-    SAMPLE_SIZE = 10
+    SAMPLE_SIZE = 3
 
     print('Printing sample data...\n')
 
@@ -30,19 +30,23 @@ class TestExtractor(unittest.TestCase):
         print('Training dataset (total size: ' + str(len(training_set)) + ')\n')
         print_dataset_info(training_set)
 
-
     def test_get_validation_dataset_info(self):
         ''' Get validation dataset '''
         validation_set = extractor.get_validation_dataset_song_ids()
         print('Validation dataset (total size: ' + str(len(validation_set)) + ')\n')
         print_dataset_info(validation_set)
 
-
     def test_get_test_dataset_info(self):
         ''' Get test dataset '''
         test_set = extractor.get_test_dataset_song_ids()
         print('Test dataset (totalsize: ' + str(len(test_set)) + ')\n')
         print_dataset_info(test_set)
+
+    def test_get_all_genres(self):
+        ''' Get test dataset '''
+        genre_list = extractor.get_all_genres()
+        print('Genre List (totalsize: ' + str(len(genre_list)) + ')\n')
+        print(genre_list)
 
 if __name__ == '__main__':
     unittest.main()

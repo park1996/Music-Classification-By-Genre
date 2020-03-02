@@ -242,6 +242,12 @@ class feature_extractor:
         ret = ret.iloc[:,1]
         return ret.loc[str(track_id)]
 
+    def get_all_genres(self):
+        ''' Return all genre types '''
+        genre_list = []
+        genre_list = self.genres[self.TITLE].to_list()
+        return genre_list
+
     def get_spectrogram(self, track_id):
         ''' Return spectrogram '''
         ''' track_id - unique ID of the song in dataset '''
