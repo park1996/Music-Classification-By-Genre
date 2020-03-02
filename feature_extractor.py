@@ -9,14 +9,14 @@ import sklearn.utils, sklearn.preprocessing, sklearn.decomposition, sklearn.svm
 import librosa
 import librosa.display
 import ast
-import warnings
+import time
 
 from enum import Enum
 from fma_utils import utils
 from pandas.api.types import CategoricalDtype
 
 class feature_type(Enum):
-    CHROMA = 1
+    CHROMA_STFT = 1
     TONNETZ = 2
     MFCC = 3
     SPEC_CENTROID = 4
@@ -68,10 +68,33 @@ class feature_extractor:
         self.GENRES = 'genres'
         self.TRACKS = 'tracks'
 
+        self.feature_types_str = {}
+        self.feature_types_str[feature_type.CHROMA_STFT] = "chroma_stft";
+        self.feature_types_str[feature_type.MFCC] = "mfcc";
+        self.feature_types_str[feature_type.RMS_ENERGY] = "rmse";
+        self.feature_types_str[feature_type.SPECTROGRAM] = "spectrogram";
+        self.feature_types_str[feature_type.SPEC_BANDWIDTH] = "spectral_bandwidth";
+        self.feature_types_str[feature_type.SPEC_CENTROID] = "spectral_centroid";
+        self.feature_types_str[feature_type.SPEC_CONTRAST] = "spectral_contrast";
+        self.feature_types_str[feature_type.SPEC_ROLLOFF] = "spectral_rolloff";
+        self.feature_types_str[feature_type.TONNETZ] = "tonnetz";
+        self.feature_types_str[feature_type.ZERO_CROSSING_RATE] = "zcr";
+
+        self.statistic_types_str = {}
+        self.statistic_types_str[statistic_type.KURTOSIS] = "kurtosis";
+        self.statistic_types_str[statistic_type.MEDIAN] = "median";
+        self.statistic_types_str[statistic_type.MEAN] = "mean";
+        self.statistic_types_str[statistic_type.MAX] = "max";
+        self.statistic_types_str[statistic_type.MIN] = "min";
+        self.statistic_types_str[statistic_type.SKEW] = "skew";
+        self.statistic_types_str[statistic_type.STD] = "std";
+
         self.__load_data()
 
     def __load_data(self):
         ''' Load datasets and features '''
+
+        start_time = time.time()
 
         # Load tracks and genres dataset
         self.tracks = self.load(self.TRACKS_FILE)
@@ -86,8 +109,7 @@ class feature_extractor:
         # Load features last
         self.features = self.load(self.FEATURES_FILE)
 
-        # Sanity check: check if number of feature rows is equal to the dataset rows
-        np.testing.assert_array_equal(self.features.shape[0], self.dataset.shape[0])
+        print ('Elapsed time: ' + str(time.time() - start_time) + 'seconds\n')
 
 
     def load(self, filepath):
@@ -95,43 +117,58 @@ class feature_extractor:
         ''' Original source code: ttps://github.com/mdeff/fma/blob/master/utils.py '''
 
         filename = os.path.basename(filepath)
+        CHUNK_SIZE = 5000
 
         if self.FEATURES in filename:
                 print ('Loading features...')
 
-                CHUNK_SIZE = 5000
-                self.features = pd.DataFrame()
+                HEADER_SIZE = 1
+
+                features = pd.DataFrame()
                 ids = []
                 ids.extend(self.get_training_dataset_song_ids())
                 ids.extend(self.get_validation_dataset_song_ids())
                 ids.extend(self.get_test_dataset_song_ids())
                 ids = list(map(str, ids))
 
+                header = pd.read_csv(filepath, nrows=HEADER_SIZE)
+                features = header
+
                 for file_chunk in pd.read_csv(filepath, low_memory=False, chunksize=CHUNK_SIZE):
                     temp = file_chunk.loc[file_chunk['feature'].isin(ids)]
+
                     if temp.shape[0] > 0:
-                        if self.features.shape[0] == 0:
-                            self.features = temp
-                        else:
-                            self.features = self.features.append(temp)
+                        features = features.append(temp)
 
-                print ('Loaded features...')
+                features = features.set_index('feature')
 
-                return self.features
+                print ('Loaded features...\n')
+
+                return features
 
         if self.GENRES in filename:
                 print ('Loading genres...')
+    
+                genre_list = []
+                
+                for chunk in  pd.read_csv(filepath, index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
+                    genre_list.append(chunk)
+  
+                print ('Loaded genres...\n')
 
-                genres = pd.read_csv(filepath, index_col=0)
-
-                print ('Loaded genres...')
+                return pd.concat(genre_list,sort=False)
 
 
         if self.TRACKS in filename:
             print ('Loading tracks...')
 
-            tracks = pd.read_csv(filepath, index_col=0, header=[0, 1])
+            track_list = []
+                
+            for chunk in  pd.read_csv(filepath, index_col=0, header=[0, 1], chunksize=CHUNK_SIZE, low_memory=False):
+                track_list.append(chunk)
 
+            tracks = pd.concat(track_list,sort=False)
+  
             COLUMNS = [('track', 'tags'), ('album', 'tags'), ('artist', 'tags'),
                                ('track', 'genres'), ('track', 'genres_all')]
 
@@ -156,7 +193,7 @@ class feature_extractor:
             for column in COLUMNS:
                     tracks[column] = tracks[column].astype('category')
 
-            print ('Loaded tracks...')
+            print ('Loaded tracks...\n')
 
             return tracks
 
@@ -193,25 +230,21 @@ class feature_extractor:
         pass
 
     def get_feature(self, track_id, feat_type, stat_type):
-        ''' Return Mel-frequency cepstral coefficients (MFCCs) '''
+        ''' Return feature '''
         ''' track_id - unique ID of the song in dataset '''
         ''' feat_type - feature type: Chroma, Tonnetz, MFCC, etc. '''
         ''' stat_type - statistic type: max, min, median, etc. '''
-        pass
+        feat_type_str = self.feature_types_str[feat_type]
+        stat_type_str = self.statistic_types_str[stat_type]
 
-    def get_mfcc(self, track_id, stat_type):
-        ''' Return Mel-frequency cepstral coefficients (MFCCs) '''
+        ret = self.features.filter(regex=feat_type_str)
+        ret = ret.loc[:, ret.loc['statistics'] == stat_type_str]
+        ret = ret.iloc[:,1]
+        return ret.loc[str(track_id)]
+
+    def get_spectrogram(self, track_id):
+        ''' Return spectrogram '''
         ''' track_id - unique ID of the song in dataset '''
         ''' stat_type - statistic type: max, min, median, etc. '''
         pass
 
-    def get_chroma(self, track_id, stat_type):
-        ''' Return Chroma '''
-        ''' track_id - unique ID of the song in dataset ''' 
-        ''' stat_type - statistic type: max, min, median, etc. '''
-        pass
-
-    def get_spectral_contrast(self, track_id, stat_type):
-        ''' Get spectral contrast '''
-        ''' stat_type - statistic type: max, min, median, etc. '''
-        pass
