@@ -12,7 +12,6 @@ import ast
 import time
 
 from enum import Enum
-from fma_utils import utils
 from pandas.api.types import CategoricalDtype
 
 class feature_type(Enum):
