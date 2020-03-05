@@ -118,49 +118,45 @@ class feature_extractor:
         filename = os.path.basename(filepath)
         CHUNK_SIZE = 5000
 
+        print ('Loading ' + filename + '...')
+
         if self.FEATURES in filename:
-                print ('Loading features...')
+            HEADER_SIZE = 1
 
-                HEADER_SIZE = 1
+            features = pd.DataFrame()
+            ids = []
+            ids.extend(self.get_training_dataset_song_ids())
+            ids.extend(self.get_validation_dataset_song_ids())
+            ids.extend(self.get_test_dataset_song_ids())
+            ids = list(map(str, ids))
 
-                features = pd.DataFrame()
-                ids = []
-                ids.extend(self.get_training_dataset_song_ids())
-                ids.extend(self.get_validation_dataset_song_ids())
-                ids.extend(self.get_test_dataset_song_ids())
-                ids = list(map(str, ids))
+            header = pd.read_csv(filepath, nrows=HEADER_SIZE)
+            features = header
 
-                header = pd.read_csv(filepath, nrows=HEADER_SIZE)
-                features = header
+            for file_chunk in pd.read_csv(filepath, low_memory=False, chunksize=CHUNK_SIZE):
+                temp = file_chunk.loc[file_chunk['feature'].isin(ids)]
 
-                for file_chunk in pd.read_csv(filepath, low_memory=False, chunksize=CHUNK_SIZE):
-                    temp = file_chunk.loc[file_chunk['feature'].isin(ids)]
+                if temp.shape[0] > 0:
+                    features = features.append(temp)
 
-                    if temp.shape[0] > 0:
-                        features = features.append(temp)
+            features = features.set_index('feature')
 
-                features = features.set_index('feature')
+            print ('Loaded ' + filename + '...\n')
 
-                print ('Loaded features...\n')
-
-                return features
+            return features
 
         if self.GENRES in filename:
-                print ('Loading genres...')
-    
-                genre_list = []
+            genre_list = []
                 
-                for chunk in  pd.read_csv(filepath, index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
-                    genre_list.append(chunk)
+            for chunk in  pd.read_csv(filepath, index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
+                genre_list.append(chunk)
   
-                print ('Loaded genres...\n')
+            print ('Loaded ' + filename  + '...\n')
 
-                return pd.concat(genre_list,sort=False)
+            return pd.concat(genre_list,sort=False)
 
 
         if self.TRACKS in filename:
-            print ('Loading tracks...')
-
             track_list = []
                 
             for chunk in  pd.read_csv(filepath, index_col=0, header=[0, 1], chunksize=CHUNK_SIZE, low_memory=False):
@@ -192,7 +188,7 @@ class feature_extractor:
             for column in COLUMNS:
                     tracks[column] = tracks[column].astype('category')
 
-            print ('Loaded tracks...\n')
+            print ('Loaded ' + filename  + '...\n')
 
             return tracks
 
