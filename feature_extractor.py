@@ -108,7 +108,7 @@ class feature_extractor:
         # Load features last
         self.features = self.load(self.FEATURES_FILE)
 
-        print ('Elapsed time: ' + str(time.time() - start_time) + 'seconds\n')
+        print ('Elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
 
 
     def load(self, filepath):
