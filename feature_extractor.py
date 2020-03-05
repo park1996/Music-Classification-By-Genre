@@ -95,9 +95,9 @@ class feature_extractor:
 
         start_time = time.time()
 
-        # Load tracks and genres dataset
-        self.tracks = self.load(self.TRACKS_FILE)
+        # Load genres and tracks dataset
         self.genres = self.load(self.GENRE_FILE)
+        self.tracks = self.load(self.TRACKS_FILE)
 
         # Parse training, validation, and test datasets
         self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
@@ -141,7 +141,7 @@ class feature_extractor:
 
             features = features.set_index('feature')
 
-            print ('Loaded ' + filename + '...\n')
+            print ('Loaded ' + filename + '\n')
 
             return features
 
@@ -151,7 +151,7 @@ class feature_extractor:
             for chunk in  pd.read_csv(filepath, index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
                 genre_list.append(chunk)
   
-            print ('Loaded ' + filename  + '...\n')
+            print ('Loaded ' + filename  + '\n')
 
             return pd.concat(genre_list,sort=False)
 
@@ -188,7 +188,7 @@ class feature_extractor:
             for column in COLUMNS:
                     tracks[column] = tracks[column].astype('category')
 
-            print ('Loaded ' + filename  + '...\n')
+            print ('Loaded ' + filename  + '\n')
 
             return tracks
 
