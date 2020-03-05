@@ -13,6 +13,15 @@ $ sudo apt-get install python3.6
 $ ./setup_env.sh
 ```
 
+## Test:
+```
+# Run unit tests on Windows
+$ py -3 -m unit_test.py
+
+# Run unit tests on Linux
+$ python3 -m unit_test.py
+```
+
 ## Dataset:
 ### Brief
 * The Free Music Archive (FMA) dataset was used for this project: https://github.com/mdeff/fma
