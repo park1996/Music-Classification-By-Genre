@@ -46,9 +46,9 @@ class TestExtractor(unittest.TestCase):
             print('Song: #' + str(i))
             print('Title: ' + str(extractor.get_title(i)))
             print('Genre: ' + str(extractor.get_genre(i)))
-            print('Median MFCC: ' + str(extractor.get_feature(i, feature_type.MFCC, statistic_type.MEDIAN)))
-            print('Median Chroma STFT: ' + str(extractor.get_feature(i, feature_type.CHROMA_STFT, statistic_type.MEDIAN)))
-            print('Median Spectral Contrast: ' + str(extractor.get_feature(i, feature_type.SPEC_CONTRAST, statistic_type.MEDIAN)) + '\n')
+            print('Median MFCC:\n' + str(extractor.get_feature(i, feature_type.MFCC, statistic_type.MEDIAN)) + '\n')
+            print('Median Chroma STFT:\n' + str(extractor.get_feature(i, feature_type.CHROMA_STFT, statistic_type.MEDIAN)) + '\n')
+            print('Median Spectral Contrast:\n' + str(extractor.get_feature(i, feature_type.SPEC_CONTRAST, statistic_type.MEDIAN)) + '\n')
 
 if __name__ == '__main__':
     unittest.main()

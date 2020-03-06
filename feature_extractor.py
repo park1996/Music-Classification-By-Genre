@@ -24,7 +24,6 @@ class feature_type(Enum):
     SPEC_ROLLOFF = 7
     RMS_ENERGY = 8
     ZERO_CROSSING_RATE = 9
-    SPECTROGRAM = 10
     
 class statistic_type(Enum):
     KURTOSIS = 1
@@ -45,13 +44,12 @@ class feature_extractor:
         self.GENRE_FILE = os.path.join(self.META_DATA_DIR, 'genres.csv')
         self.FEATURES_FILE = os.path.join(self.META_DATA_DIR, 'features.csv')
 
-        print('Loading the following metadata files:')
-        print('\t' + self.TRACKS_FILE)
-        print('\t' + self.GENRE_FILE)
-        print('\t' + self.FEATURES_FILE)
-        print('\n')
+        print('Finding the following metadata files:\n')
+        print(self.GENRE_FILE + '\n')
+        print(self.TRACKS_FILE + '\n')
+        print(self.FEATURES_FILE + '\n')
 
-        # Dataframe keys
+        # DataFrame keys
         self.TRACK = 'track'
         self.TITLE = 'title'
         self.GENRE = 'genre'
@@ -71,7 +69,6 @@ class feature_extractor:
         self.feature_types_str[feature_type.CHROMA_STFT] = "chroma_stft";
         self.feature_types_str[feature_type.MFCC] = "mfcc";
         self.feature_types_str[feature_type.RMS_ENERGY] = "rmse";
-        self.feature_types_str[feature_type.SPECTROGRAM] = "spectrogram";
         self.feature_types_str[feature_type.SPEC_BANDWIDTH] = "spectral_bandwidth";
         self.feature_types_str[feature_type.SPEC_CENTROID] = "spectral_centroid";
         self.feature_types_str[feature_type.SPEC_CONTRAST] = "spectral_contrast";
@@ -91,15 +88,15 @@ class feature_extractor:
         self.__load_data()
 
     def __load_data(self):
-        ''' Load datasets and features '''
+        ''' Load metadata and features'''
 
         start_time = time.time()
 
-        # Load genres and tracks dataset
+        # Load genres and tracks metadata
         self.genres = self.load(self.GENRE_FILE)
         self.tracks = self.load(self.TRACKS_FILE)
 
-        # Parse training, validation, and test datasets
+        # Get training, validation, and test datasets
         self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
         self.training_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TRAINING]
         self.validation_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.VALIDATION]
@@ -234,18 +231,12 @@ class feature_extractor:
 
         ret = self.features.filter(regex=feat_type_str)
         ret = ret.loc[:, ret.loc['statistics'] == stat_type_str]
-        ret = ret.iloc[:,1]
-        return ret.loc[str(track_id)]
+        ret = ret.loc[str(track_id)]
+        return ret.to_list()
 
     def get_all_genres(self):
         ''' Return all genre types '''
         genre_list = []
         genre_list = self.genres[self.TITLE].to_list()
         return genre_list
-
-    def get_spectrogram(self, track_id):
-        ''' Return spectrogram '''
-        ''' track_id - unique ID of the song in dataset '''
-        ''' stat_type - statistic type: max, min, median, etc. '''
-        pass
 
