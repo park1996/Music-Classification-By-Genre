@@ -38,7 +38,7 @@ class TestExtractor(unittest.TestCase):
 
     def print_dataset_info(dataset):
         ''' Print dataset info'''
-        SAMPLE_SIZE = 3
+        SAMPLE_SIZE = 2
 
         print('Printing sample data...\n')
 

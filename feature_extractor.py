@@ -10,6 +10,7 @@ import librosa
 import librosa.display
 import ast
 import time
+import itertools
 
 from enum import Enum
 from pandas.api.types import CategoricalDtype
@@ -45,8 +46,8 @@ class feature_extractor:
         self.FEATURES_FILE = os.path.join(self.META_DATA_DIR, 'features.csv')
 
         print('Finding the following metadata files:\n')
-        print(self.GENRE_FILE + '\n')
         print(self.TRACKS_FILE + '\n')
+        print(self.GENRE_FILE + '\n')
         print(self.FEATURES_FILE + '\n')
 
         # DataFrame keys
@@ -63,27 +64,28 @@ class feature_extractor:
         self.TEST = 'test'
         self.FEATURES = 'features'
         self.GENRES = 'genres'
+        self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
 
         self.feature_types_str = {}
-        self.feature_types_str[feature_type.CHROMA_STFT] = "chroma_stft";
-        self.feature_types_str[feature_type.MFCC] = "mfcc";
-        self.feature_types_str[feature_type.RMS_ENERGY] = "rmse";
-        self.feature_types_str[feature_type.SPEC_BANDWIDTH] = "spectral_bandwidth";
-        self.feature_types_str[feature_type.SPEC_CENTROID] = "spectral_centroid";
-        self.feature_types_str[feature_type.SPEC_CONTRAST] = "spectral_contrast";
-        self.feature_types_str[feature_type.SPEC_ROLLOFF] = "spectral_rolloff";
-        self.feature_types_str[feature_type.TONNETZ] = "tonnetz";
-        self.feature_types_str[feature_type.ZERO_CROSSING_RATE] = "zcr";
+        self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
+        self.feature_types_str[feature_type.MFCC] = 'mfcc';
+        self.feature_types_str[feature_type.RMS_ENERGY] = 'rmse';
+        self.feature_types_str[feature_type.SPEC_BANDWIDTH] = 'spectral_bandwidth';
+        self.feature_types_str[feature_type.SPEC_CENTROID] = 'spectral_centroid';
+        self.feature_types_str[feature_type.SPEC_CONTRAST] = 'spectral_contrast';
+        self.feature_types_str[feature_type.SPEC_ROLLOFF] = 'spectral_rolloff';
+        self.feature_types_str[feature_type.TONNETZ] = 'tonnetz';
+        self.feature_types_str[feature_type.ZERO_CROSSING_RATE] = 'zcr';
 
         self.statistic_types_str = {}
-        self.statistic_types_str[statistic_type.KURTOSIS] = "kurtosis";
-        self.statistic_types_str[statistic_type.MEDIAN] = "median";
-        self.statistic_types_str[statistic_type.MEAN] = "mean";
-        self.statistic_types_str[statistic_type.MAX] = "max";
-        self.statistic_types_str[statistic_type.MIN] = "min";
-        self.statistic_types_str[statistic_type.SKEW] = "skew";
-        self.statistic_types_str[statistic_type.STD] = "std";
+        self.statistic_types_str[statistic_type.KURTOSIS] = 'kurtosis';
+        self.statistic_types_str[statistic_type.MEDIAN] = 'median';
+        self.statistic_types_str[statistic_type.MEAN] = 'mean';
+        self.statistic_types_str[statistic_type.MAX] = 'max';
+        self.statistic_types_str[statistic_type.MIN] = 'min';
+        self.statistic_types_str[statistic_type.SKEW] = 'skew';
+        self.statistic_types_str[statistic_type.STD] = 'std';
 
         self.__load_data()
 
@@ -92,8 +94,19 @@ class feature_extractor:
 
         start_time = time.time()
 
-        # Load genres and tracks metadata
-        self.genres = self.load(self.GENRE_FILE)
+        self.__load_tracks()
+
+        self.__load_genres()
+
+        # Load features last
+        self.features = self.load(self.FEATURES_FILE)
+
+        print ('Elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
+
+
+    def __load_tracks(self):
+        '''  Load tracks metadata and dataset '''
+        # Load tracks metadata
         self.tracks = self.load(self.TRACKS_FILE)
 
         # Get training, validation, and test datasets
@@ -102,11 +115,29 @@ class feature_extractor:
         self.validation_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.VALIDATION]
         self.test_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TEST]
 
-        # Load features last
-        self.features = self.load(self.FEATURES_FILE)
+        self.list_of_all_song_ids = self.get_training_dataset_song_ids()
+        self.list_of_all_song_ids.extend(self.get_validation_dataset_song_ids())
+        self.list_of_all_song_ids.extend(self.get_validation_dataset_song_ids())
 
-        print ('Elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
+    def __load_genres(self):
+        '''  Load genre metadata '''
+        # Load genre metadata
+        self.genres = self.load(self.GENRE_FILE)
 
+        # Get genres in dataset
+        list_of_genre_ids = self.training_dataset[self.TRACK, self.GENRES].to_list()
+        genre_id_list = list(itertools.chain.from_iterable(list_of_genre_ids))
+
+        list_of_genre_ids = self.validation_dataset[self.TRACK, self.GENRES].to_list()
+        genre_id_list.extend(list(itertools.chain.from_iterable(list_of_genre_ids)))
+
+        list_of_genre_ids = self.test_dataset[self.TRACK, self.GENRES].to_list()
+        genre_id_list.extend(list(itertools.chain.from_iterable(list_of_genre_ids)))
+
+        genre_array = np.array(genre_id_list)
+        self.list_of_all_genre_ids = np.unique(genre_array).tolist()
+
+        self.genres = self.genres.loc[self.genres.index.isin(map(str, self.list_of_all_genre_ids))]
 
     def load(self, filepath):
         ''' The following method was taken from the FMA repository and heavily modified.'''
@@ -189,6 +220,10 @@ class feature_extractor:
 
             return tracks
 
+    def get_all_song_ids(self):
+        ''' Get all song ids '''
+        return self.self.list_of_all_song_ids
+
     def get_training_dataset_song_ids(self):
         ''' Get all song ids in training set '''
         return self.training_dataset.index.tolist()
@@ -232,11 +267,11 @@ class feature_extractor:
         ret = self.features.filter(regex=feat_type_str)
         ret = ret.loc[:, ret.loc['statistics'] == stat_type_str]
         ret = ret.loc[str(track_id)]
-        return ret.to_list()
+        ret_list = list(map(np.float32, ret.to_list()))
+        return ret_list
 
     def get_all_genres(self):
         ''' Return all genre types '''
         genre_list = []
         genre_list = self.genres[self.TITLE].to_list()
         return genre_list
-
