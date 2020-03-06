@@ -64,8 +64,11 @@ class feature_extractor:
         self.TEST = 'test'
         self.FEATURES = 'features'
         self.GENRES = 'genres'
+        self.GENRES_TOP = 'genres_top'
         self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
+        self.TOP_LEVEL = 'top_level'
+
 
         self.feature_types_str = {}
         self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
@@ -125,19 +128,12 @@ class feature_extractor:
         self.genres = self.load(self.GENRE_FILE)
 
         # Get genres in dataset
-        list_of_genre_ids = self.training_dataset[self.TRACK, self.GENRES].to_list()
-        genre_id_list = list(itertools.chain.from_iterable(list_of_genre_ids))
+        list_of_all_genres = self.training_dataset[self.TRACK, self.GENRES_TOP].to_list()
+        list_of_all_genres.extend(self.validation_dataset[self.TRACK, self.GENRES_TOP].to_list())
+        list_of_all_genres.extend(self.test_dataset[self.TRACK, self.GENRES_TOP].to_list())
 
-        list_of_genre_ids = self.validation_dataset[self.TRACK, self.GENRES].to_list()
-        genre_id_list.extend(list(itertools.chain.from_iterable(list_of_genre_ids)))
-
-        list_of_genre_ids = self.test_dataset[self.TRACK, self.GENRES].to_list()
-        genre_id_list.extend(list(itertools.chain.from_iterable(list_of_genre_ids)))
-
-        genre_array = np.array(genre_id_list)
-        self.list_of_all_genre_ids = np.unique(genre_array).tolist()
-
-        self.genres = self.genres.loc[self.genres.index.isin(map(str, self.list_of_all_genre_ids))]
+        genre_array = np.array(list_of_all_genres)
+        self.list_of_all_genres = np.unique(genre_array).tolist()
 
     def load(self, filepath):
         ''' The following method was taken from the FMA repository and heavily modified.'''
@@ -244,12 +240,7 @@ class feature_extractor:
     def get_genre(self, track_id):
         ''' Get genre of track '''
         ''' track_id - unique ID of the song in dataset '''
-        index = self.tracks.loc[track_id, self.TRACK][self.GENRES]
-        genre_list = []
-        for i in index:
-            genre_list.append(self.genres.loc[i][self.TITLE])
-        
-        return genre_list
+        return self.tracks.loc[track_id, self.TRACK][self.GENRES_TOP]
 
     def get_filename(self, track_id):
         ''' Get filename of track '''
@@ -272,6 +263,4 @@ class feature_extractor:
 
     def get_all_genres(self):
         ''' Return all genre types '''
-        genre_list = []
-        genre_list = self.genres[self.TITLE].to_list()
-        return genre_list
+        return self.list_of_all_genres
