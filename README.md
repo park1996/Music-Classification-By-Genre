@@ -27,7 +27,7 @@ $ python3 -m unit_test.py
 ### Details:
 * The datset consists of 8000 songs in 8 genres taken from the following dataset: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip) - size is 7.2 GB
 * The metadata is in csv files which contains various information about the songs such as artist, genre, and record date
-* Pre-computed features are part of the metadata like MFCC, ZCR, Tonnetz, etc.
+* Pre-computed features are part of the metadata like MFCC, spectral contrast, RMS energy, ZCR, Tonnetz, etc.
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
 * The metadata for all tracks can be downloaded here: [fma_metadata.zip](https://os.unil.cloud.switch.ch/fma/fma_metadata.zip) - size is 342 MB
 
