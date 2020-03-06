@@ -26,7 +26,7 @@ $ python3 -m unit_test.py
 
 ### Details:
 * The datset consists of 8000 songs in 8 genres taken from the following dataset: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip) - size is 7.2 GB
-* The following genres are considered: Electronic, Experimental, Folk, Hip-Hop, Instrumental, International, and Pop, Rock
+* These genres include Electronic, Experimental, Folk, Hip-Hop, Instrumental, International, Pop, and Rock
 * The metadata is in csv files which contains various information about the songs such as artist, genre, and record date
 * Pre-computed features are part of the metadata such as MFCC, spectral contrast, and Tonnetz
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
