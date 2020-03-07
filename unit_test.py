@@ -37,7 +37,9 @@ class TestExtractor(unittest.TestCase):
     def test_get_all_genres(self):
         ''' Get test dataset '''
         genre_list = extractor.get_all_genres()
-        print('Genre List (totalsize: ' + str(len(genre_list)) + ')\n')
+        print('---------------------------------------------------------')
+        print('Genre List (totalsize: ' + str(len(genre_list)) + ')')
+        print('---------------------------------------------------------\n')
         print(genre_list)
         print('\n')
 
