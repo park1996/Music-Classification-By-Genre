@@ -1,6 +1,5 @@
 import audio_preprocessor
 import numpy as np
-import matplotlib.pyplot as plt
 import unittest
 
 from feature_extractor import feature_extractor
@@ -14,19 +13,25 @@ class TestExtractor(unittest.TestCase):
     def test_get_training_dataset_info(self):
         ''' Get training dataset '''
         training_set_song_ids = extractor.get_training_dataset_song_ids()
-        print('Training dataset (total size: ' + str(len(training_set_song_ids)) + ')\n')
+        print('---------------------------------------------------------')
+        print('Training dataset (total size: ' + str(len(training_set_song_ids)) + ')')
+        print('---------------------------------------------------------\n')
         TestExtractor.print_dataset_info(training_set_song_ids)
 
     def test_get_validation_dataset_info(self):
         ''' Get validation dataset '''
         validation_set_song_ids = extractor.get_validation_dataset_song_ids()
-        print('Validation dataset (total size: ' + str(len(validation_set_song_ids)) + ')\n')
+        print('---------------------------------------------------------')
+        print('Validation dataset (total size: ' + str(len(validation_set_song_ids)) + ')')
+        print('---------------------------------------------------------\n')
         TestExtractor.print_dataset_info(validation_set_song_ids)
 
     def test_get_test_dataset_info(self):
         ''' Get test dataset '''
         test_set_song_ids = extractor.get_test_dataset_song_ids()
+        print('---------------------------------------------------------')
         print('Test dataset (totalsize: ' + str(len(test_set_song_ids)) + ')\n')
+        print('---------------------------------------------------------')
         TestExtractor.print_dataset_info(test_set_song_ids)
 
     def test_get_all_genres(self):

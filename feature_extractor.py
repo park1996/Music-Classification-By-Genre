@@ -1,16 +1,8 @@
 import os
-import IPython.display as ipd
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-import sklearn as skl
-import sklearn.utils, sklearn.preprocessing, sklearn.decomposition, sklearn.svm
-import librosa
-import librosa.display
 import ast
 import time
-import itertools
 
 from enum import Enum
 from pandas.api.types import CategoricalDtype
@@ -68,7 +60,6 @@ class feature_extractor:
         self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
         self.TOP_LEVEL = 'top_level'
-
 
         self.feature_types_str = {}
         self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
