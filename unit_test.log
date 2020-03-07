@@ -1,10 +1,10 @@
 Finding the following metadata files:
 
-C:\Music-Classification-Genre\fma_metadata\tracks.csv
+C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\tracks.csv
 
-C:\Music-Classification-Genre\fma_metadata\genres.csv
+C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\genres.csv
 
-C:Music-Classification-Genre\fma_metadata\features.csv
+C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\features.csv
 
 Loading tracks.csv...
 Loaded tracks.csv
@@ -15,7 +15,7 @@ Loaded genres.csv
 Loading features.csv...
 Loaded features.csv
 
-Elapsed time: 20.399590730667114 seconds
+Elapsed time: 20.26844620704651 seconds
 
 ---------------------------------------------------------
 Genre List (totalsize: 8)
@@ -43,19 +43,6 @@ Median Chroma STFT:
 Median Spectral Contrast:
 [18.541187, 14.552055, 16.448263, 16.261047, 18.336111, 24.978382, 26.670383]
 
-Song: #704
-Title: Mano De Dios
-Artist: Fósforo
-Genre: International
-Median MFCC:
-[-69.081635, 82.30826, -9.020431, 35.608635, 0.82287097, 28.378017, -1.19881, 9.987974, -3.7906306, 8.959111, -0.53222466, 5.1566687, 0.9289768, 8.46776, -1.5327073, 2.2565312, 3.2435842, 3.793042, 0.462211, -4.1992655]
-
-Median Chroma STFT:
-[0.5004658, 0.39736846, 0.4506937, 0.41556326, 0.4374872, 0.33025503, 0.36899403, 0.41843784, 0.35426903, 0.38507622, 0.40232354, 0.54047704]
-
-Median Spectral Contrast:
-[22.270658, 17.277527, 17.972881, 18.502518, 17.222023, 16.865414, 30.282532]
-
 .---------------------------------------------------------
 Training dataset (total size: 6400)
 ---------------------------------------------------------
@@ -74,19 +61,6 @@ Median Chroma STFT:
 
 Median Spectral Contrast:
 [17.58058, 15.031244, 16.844053, 16.985653, 17.816685, 17.255152, 39.830345]
-
-Song: #5
-Title: This World
-Artist: AWOL
-Genre: Hip-Hop
-Median MFCC:
-[-181.01596, 138.25394, -14.507562, 43.082825, -7.996415, 17.443892, -3.9315085, 9.787046, 0.2664227, 8.91002, -7.978985, 0.26083407, -0.11272676, 2.252367, 7.514513, 1.8749064, 7.339341, -1.9182014, 1.5987212e-14, -5.602306]
-
-Median Chroma STFT:
-[0.4400584, 0.7320332, 0.41174665, 0.29488853, 0.26658228, 0.253355, 0.26498565, 0.2821129, 0.33341634, 0.35226503, 0.42141148, 0.4068381]
-
-Median Spectral Contrast:
-[16.489166, 15.864572, 18.528168, 16.879728, 16.944323, 19.105276, 39.10198]
 
 .---------------------------------------------------------
 Validation dataset (total size: 800)
@@ -107,21 +81,8 @@ Median Chroma STFT:
 Median Spectral Contrast:
 [16.784367, 11.682926, 14.579188, 17.704382, 17.36034, 17.320047, 19.220865]
 
-Song: #459
-Title: Machines and Muscles
-Artist: CAVE
-Genre: Rock
-Median MFCC:
-[-68.86655, 176.29942, -13.08418, 29.326294, -3.1257312, 24.333265, -0.8343338, 15.2086315, -5.160735, 7.7730303, -3.5772004, 7.42968, -1.0334699, 3.4366763, 1.8012837, 1.1436137, 3.501221, 2.0249527, 1.6563172, -0.3296458]
-
-Median Chroma STFT:
-[0.4027355, 0.4522405, 0.85678434, 0.5447225, 0.46847853, 0.39475435, 0.4613517, 0.47991753, 0.37443933, 0.47323632, 0.4099102, 0.47291586]
-
-Median Spectral Contrast:
-[16.543715, 13.882265, 15.83077, 15.964615, 16.032072, 16.476429, 35.861103]
-
 .
 ----------------------------------------------------------------------
-Ran 4 tests in 0.624s
+Ran 4 tests in 0.333s
 
 OK
