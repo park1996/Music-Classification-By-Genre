@@ -1,7 +1,7 @@
 # Music Classification by Genre
 
 
-## Packages:
+## Requirements:
 * Python 3.6+
 * SciPy
 * LibROSA
