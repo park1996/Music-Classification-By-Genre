@@ -30,8 +30,8 @@ class TestExtractor(unittest.TestCase):
         ''' Get test dataset '''
         test_set_song_ids = extractor.get_test_dataset_song_ids()
         print('---------------------------------------------------------')
-        print('Test dataset (totalsize: ' + str(len(test_set_song_ids)) + ')\n')
-        print('---------------------------------------------------------')
+        print('Test dataset (totalsize: ' + str(len(test_set_song_ids)) + ')')
+        print('---------------------------------------------------------\n')
         TestExtractor.print_dataset_info(test_set_song_ids)
 
     def test_get_all_genres(self):
