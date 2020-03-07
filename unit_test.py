@@ -45,13 +45,14 @@ class TestExtractor(unittest.TestCase):
 
     def print_dataset_info(dataset):
         ''' Print dataset info'''
-        SAMPLE_SIZE = 2
+        SAMPLE_SIZE = 1
 
         print('Printing sample data...\n')
 
         for i in dataset[:SAMPLE_SIZE]:
             print('Song: #' + str(i))
             print('Title: ' + str(extractor.get_title(i)))
+            print('Artist: ' + str(extractor.get_artist(i)))
             print('Genre: ' + str(extractor.get_genre(i)))
             print('Median MFCC:\n' + str(extractor.get_feature(i, feature_type.MFCC, statistic_type.MEDIAN)) + '\n')
             print('Median Chroma STFT:\n' + str(extractor.get_feature(i, feature_type.CHROMA_STFT, statistic_type.MEDIAN)) + '\n')

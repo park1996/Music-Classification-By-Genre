@@ -46,6 +46,8 @@ class feature_extractor:
         self.TRACK = 'track'
         self.TITLE = 'title'
         self.GENRE = 'genre'
+        self.ARTIST = 'artist'
+        self.NAME = 'name'
         self.FEATURE = 'feature'
         self.TRAINING = 'training'
         self.VALIDATION = 'validation'
@@ -60,6 +62,8 @@ class feature_extractor:
         self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
         self.TOP_LEVEL = 'top_level'
+        self.RAW= 'raw'
+
 
         self.feature_types_str = {}
         self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
@@ -139,11 +143,7 @@ class feature_extractor:
             HEADER_SIZE = 1
 
             features = pd.DataFrame()
-            ids = []
-            ids.extend(self.get_training_dataset_song_ids())
-            ids.extend(self.get_validation_dataset_song_ids())
-            ids.extend(self.get_test_dataset_song_ids())
-            ids = list(map(str, ids))
+            ids = list(map(str, self.list_of_all_song_ids))
 
             header = pd.read_csv(filepath, nrows=HEADER_SIZE)
             features = header
@@ -233,10 +233,10 @@ class feature_extractor:
         ''' track_id - unique ID of the song in dataset '''
         return self.tracks.loc[track_id, self.TRACK][self.GENRES_TOP]
 
-    def get_filename(self, track_id):
-        ''' Get filename of track '''
+    def get_artist(self, track_id):
+        ''' Get artist of track '''
         ''' track_id - unique ID of the song in dataset ''' 
-        pass
+        return self.tracks.loc[track_id, self.ARTIST][self.NAME]
 
     def get_feature(self, track_id, feat_type, stat_type):
         ''' Return feature '''
