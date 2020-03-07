@@ -5,7 +5,7 @@
 * Python 3.6+
 * SciPy
 * LibROSA
-* Numpy
+* NumPy
 * Matplotlib
 
 ## Setup:
