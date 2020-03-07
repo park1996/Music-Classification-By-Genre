@@ -2,7 +2,11 @@
 
 
 ## Packages:
-Python 3.6+, SciPy, LibROSA , Numpy, Matplotlib, seaborn, dotenv, pydot
+* Python 3.6+
+* SciPy
+* LibROSA
+* Numpy
+* Matplotlib
 
 ## Installation:
 ```
