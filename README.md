@@ -22,7 +22,7 @@ $ python3 -m unit_test.py
 
 ## Dataset:
 ### Brief
-* The dataset for this project was taken from the Free Music Archive (FMA): https://github.com/mdeff/fma
+* The dataset was taken from the Free Music Archive (FMA): https://github.com/mdeff/fma
 * The dataset consists of 8000 songs and excellent metadata that includes pre-computed features
 
 ### Details:
