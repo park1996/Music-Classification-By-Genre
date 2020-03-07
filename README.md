@@ -8,11 +8,8 @@
 * Numpy
 * Matplotlib
 
-## Installation:
+## Setup:
 ```
-# Install Python 3.6 or greater
-$ sudo apt-get install python3.6
-
 # Setup environment
 $ ./setup_env.sh
 ```
