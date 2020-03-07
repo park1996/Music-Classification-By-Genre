@@ -22,11 +22,11 @@ $ python3 -m unit_test.py
 ## Dataset:
 ### Brief
 * The dataset for this project was taken from the Free Music Archive (FMA): https://github.com/mdeff/fma
-* The dataset consists of thousands of songs and excellent metadata that includes pre-computed features
+* The dataset consists of 8000 songs and excellent metadata that includes pre-computed features
 
 ### Details:
-* The datset consists of 8000 songs in 8 genres taken from the following dataset: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip) - size is 7.2 GB
-* The metadata is in csv files which contains various information about the songs such as artist, genre, and record date
+* The FMA dataset consists of 8 genres: Electronic, Experimental, Folk, Hip-Hop, Instrumental, International, Pop, Rock
+* The metadata is in csv files which contain various information about the songs such as artist, genre, and record date
 * Pre-computed features are part of the metadata such as MFCC, spectral contrast, and Tonnetz
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
 * The metadata for all tracks can be downloaded here: [fma_metadata.zip](https://os.unil.cloud.switch.ch/fma/fma_metadata.zip) - size is 342 MB
