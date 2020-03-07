@@ -120,7 +120,7 @@ class feature_extractor:
 
         self.list_of_all_song_ids = self.get_training_dataset_song_ids()
         self.list_of_all_song_ids.extend(self.get_validation_dataset_song_ids())
-        self.list_of_all_song_ids.extend(self.get_validation_dataset_song_ids())
+        self.list_of_all_song_ids.extend(self.get_test_dataset_song_ids())
 
     def __load_genres(self):
         '''  Load genre metadata '''
