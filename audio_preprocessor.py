@@ -1,46 +1,70 @@
-from scipy.io import wavfile as wav
+import os
+import numpy as np
+import librosa
+import librosa.display
+import pandas as pd
 import matplotlib.pyplot as plt
+import shutil
+import sys
+import warnings
+
+from scipy.io import wavfile as wav
+from tqdm import tqdm
 
 class audio_preprocessor:
     def __init__(self):
         ''' Constructor for this class '''
+        # Audio and Mel Spectorgram directories
+        self.AUDIO_DATASET_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fma_small')
+        self.MEL_SPECTROGRAM_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fma_spectrogram')
+        self.__find_audio_files()
 
-    def audio_read(self, input_path, output_path):
+    def __find_audio_files(self):
+        ''' Find audio files '''
+        self.list_of_all_audio_files = []
+        for dirpath, subdirs, files in os.walk(self.AUDIO_DATASET_DIR):
+            for file in files:
+                if file.endswith('.mp3'):
+                    self.list_of_all_audio_files.append(os.path.join(dirpath, file))
+
+        print('Found ' + str(len(self.list_of_all_audio_files)) + ' files')
+
+    def audio_read(self, audio_filepath):
         ''' Read audio wav file and normalize to [-1, 1)  '''
-        ''' input_path - input wav file '''
-        ''' output_path - output wav file '''
+        ''' input_path - input mp3 file '''
+        y = None
+        sr = None
+        audio = None
         nbits = 32
-        samplerate, x = wav.read(input_path)
 
-        if x.dtype == "float32":
-            audio = x
+        with warnings.catch_warnings():
+            # Ignore warnings when reading audio file using Librosa
+            warnings.simplefilter("ignore")
+            y, samplerate = librosa.load(audio_filepath)
+
+        if y.dtype == "float32":
+            audio = y
         else:
             # change range to [-1,1)
-            if x.dtype == "uint8":
+            if y.dtype == "uint8":
                 nbits = 8
-            elif x.dtype == "int16":
+            elif y.dtype == "int16":
                 nbits = 16
-            elif x.dtype == "int32":
+            elif y.dtype == "int32":
                 nbits = 32
-            elif x.dtype == "float64":
+            elif y.dtype == "float64":
                 nbits = 64
 
-            audio = x / float(2 ** (nbits - 1))
+            audio = y / float(2 ** (nbits - 1))
 
         # special case of unsigned format
-        if x.dtype == "uint8":
+        if y.dtype == "uint8":
             audio = audio - 1.0
 
         if audio.ndim > 1:
             audio = audio[:, 0]
 
-        wav.write(output_path, samplerate, audio);
-
-        fig, axs = plt.subplots(1,2)
-        axs[0].plot(x)
-        axs[1].plot(audio)
-        plt.show()
-        return samplerate, audio
+        return audio, samplerate
 
     def block_audio(x, blockSize, hopSize, fs):
         """
@@ -67,21 +91,52 @@ class audio_preprocessor:
             xb[n][np.arange(0, blockSize)] = x[np.arange(i_start, i_stop + 1)]
         return xb, t
 
+    def make_mel_spect_dir(self):
+        ''' Make Mel Spectrogram directory '''
+        if not os.path.exists(self.MEL_SPECTROGRAM_DIR):
+            os.makedirs(self.MEL_SPECTROGRAM_DIR)
+        return
 
-    def normalize_audio_files(self, input_directory, output_directory):
-        ''' Normalize all audio files in the input directory and save to output '''
-        pass
+    def del_mel_spect_dir(self):
+        ''' Delete previous Mel Spectrogram directory '''
+        if os.path.exists(self.MEL_SPECTROGRAM_DIR):
+            shutil.rmtree(self.MEL_SPECTROGRAM_DIR)
+        return
 
+    def get_mel_spectrogram(self, audio_filepath):
+        ''' Get Mel Spectrogram '''
+        y, sr = self.audio_read(audio_filepath)
+        spect = librosa.feature.melspectrogram(y=y, sr=sr,n_fft=2048, hop_length=512)
+        spect = librosa.power_to_db(spect, ref=np.max)
+        return spect
 
-    def get_fourier_transform(self):
-        ''' Return Fourier transform '''
-        pass
+    def prepare_mel_spectrogram_image(self, audio_filepath):
+        WIDTH = 10
+        HEIGHT = 4
+        spect = self.get_mel_spectrogram(audio_filepath)
+        plt.figure(figsize=(WIDTH, HEIGHT))
+        librosa.display.specshow(spect, y_axis='mel', fmax=20000, x_axis='time')
 
-    def get_tempo(self):
-        ''' Return tempo over time '''
-        pass
+    def save_mel_spectrogram(self, audio_filepath, output_filepath):
+        ''' Save an spectrogram to a file '''
+        print ('Saving Mel Spectrogram for ' + os.path.basename(audio_filepath))
+        self.prepare_mel_spectrogram_image(audio_filepath)
+        self.make_mel_spect_dir()
+        plt.savefig(output_filepath)
+        plt.close()
+        return
 
-    def get_spectral_contrast(self):
-        ''' Get spectral contrast '''
-        pass
+    def plot_mel_spectrogram(self, audio_filepath):
+        ''' Plot Mel Spectrogram '''
+        print ('Showing Mel Spectrogram for ' + os.path.basename(audio_filepath))
+        self.prepare_mel_spectrogram_image(audio_filepath)
+        plt.show()
+        plt.close()
+        return
+
+processor = audio_preprocessor()
+processor.del_mel_spect_dir()
+for file in tqdm(processor.list_of_all_audio_files):
+    output_file = os.path.join(processor.MEL_SPECTROGRAM_DIR, os.path.splitext(os.path.basename(file))[0] + '.png')
+    processor.save_mel_spectrogram(file, output_file)
 
