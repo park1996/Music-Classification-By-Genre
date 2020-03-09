@@ -8,7 +8,6 @@ import shutil
 import sys
 import warnings
 
-from scipy.io import wavfile as wav
 from tqdm import tqdm
 
 class audio_preprocessor:
