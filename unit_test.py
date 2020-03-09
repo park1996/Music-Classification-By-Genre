@@ -1,12 +1,13 @@
-import audio_preprocessor
 import numpy as np
 import unittest
 
+from audio_preprocessor import audio_preprocessor
 from feature_extractor import feature_extractor
 from feature_extractor import feature_type
 from feature_extractor import statistic_type
 
 extractor = feature_extractor()
+processor = audio_preprocessor()
 
 class TestExtractor(unittest.TestCase):
     ''' Test feature extractor class '''
@@ -60,6 +61,21 @@ class TestExtractor(unittest.TestCase):
             print('Median MFCC:\n' + str(extractor.get_feature(i, feature_type.MFCC, statistic_type.MEDIAN)) + '\n')
             print('Median Chroma STFT:\n' + str(extractor.get_feature(i, feature_type.CHROMA_STFT, statistic_type.MEDIAN)) + '\n')
             print('Median Spectral Contrast:\n' + str(extractor.get_feature(i, feature_type.SPEC_CONTRAST, statistic_type.MEDIAN)) + '\n')
+
+class TestProcessor(unittest.TestCase):
+    ''' Test audio preprocessor class '''
+    ''' Make sure to download the audio folder '''
+    ''' using setup_env.sh before running unit tests '''
+
+    def test_display_spectrogram(self):
+        ''' Get training dataset '''
+        size = len(processor.list_of_all_audio_files)
+
+        if size > 0:
+            print('---------------------------------------------------------')
+            print('Audio data files (total size: ' + str(len(processor.list_of_all_audio_files)) + ')')
+            print('---------------------------------------------------------\n')
+            processor.plot_mel_spectrogram(processor.list_of_all_audio_files[0])
 
 if __name__ == '__main__':
     unittest.main()
