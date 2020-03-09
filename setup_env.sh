@@ -21,12 +21,10 @@ metadata_file=fma_metadata.zip
 dataset_file=fma_small.zip
 help=false
 
-
 while getopts "hdmi" options; do
 	case "${options}" in
 		d)
 			download_dataset=1
-			echo "Downloading dataset"
 			;;
 		m)
 			download_metadata=1
@@ -42,8 +40,6 @@ while getopts "hdmi" options; do
 	esac
 done
 
-
-
 if [[ $download_metadata -eq 0 && $download_dataset -eq 0 && $install_packages -eq 0 ]] ; then
 	print_help
 	exit 0
@@ -54,7 +50,6 @@ if [[ $install_packages -eq 1 ]] ; then
 	echo "Installing packages"
 	pip3 install numpy matplotlib librosa tqdm
 fi
-
 
 # Download metadata
 if [[ $download_metadata -eq 1 ]] ; then
