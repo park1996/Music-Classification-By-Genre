@@ -9,7 +9,10 @@ from feature_extractor import statistic_type
 extractor = feature_extractor()
 
 class TestExtractor(unittest.TestCase):
-   
+    ''' Test feature extractor class '''
+    ''' Make sure to download the metadata folder '''
+    ''' using setup_env.sh before running unit tests '''
+
     def test_get_training_dataset_info(self):
         ''' Get training dataset '''
         training_set_song_ids = extractor.get_training_dataset_song_ids()

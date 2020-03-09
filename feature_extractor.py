@@ -28,6 +28,8 @@ class statistic_type(Enum):
     STD = 7  
 
 class feature_extractor:
+    ''' Extracts features from metadata folder '''
+
     def __init__(self):
         ''' Constructor for this class '''
 
