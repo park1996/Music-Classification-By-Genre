@@ -11,6 +11,8 @@ import warnings
 from tqdm import tqdm
 
 class audio_preprocessor:
+    ''' Process audio files and create Mel Spectrogram images '''
+
     def __init__(self):
         ''' Constructor for this class '''
         # Audio and Mel Spectorgram directories
