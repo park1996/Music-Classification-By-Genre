@@ -3,7 +3,6 @@
 
 ## Requirements:
 * Python 3.6+
-* SciPy
 * LibROSA
 * NumPy
 * Matplotlib
@@ -11,7 +10,7 @@
 ## Setup:
 ```
 # Setup environment
-$ ./setup_env.sh -m
+$ ./setup_env.sh -i -m
 ```
 
 ## Test:
