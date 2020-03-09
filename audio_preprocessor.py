@@ -134,8 +134,8 @@ class audio_preprocessor:
         return
 
 processor = audio_preprocessor()
-processor.del_mel_spect_dir()
 for file in tqdm(processor.list_of_all_audio_files):
     output_file = os.path.join(processor.MEL_SPECTROGRAM_DIR, os.path.splitext(os.path.basename(file))[0] + '.png')
-    processor.save_mel_spectrogram(file, output_file)
+    if not os.path.exists(output_file):
+        processor.save_mel_spectrogram(file, output_file)
 
