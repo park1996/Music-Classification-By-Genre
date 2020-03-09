@@ -21,12 +21,10 @@ metadata_file=fma_metadata.zip
 dataset_file=fma_small.zip
 help=false
 
-
 while getopts "hdmi" options; do
 	case "${options}" in
 		d)
 			download_dataset=1
-			echo "Downloading dataset"
 			;;
 		m)
 			download_metadata=1
