@@ -19,7 +19,6 @@ download_dataset=0
 install_packages=0
 metadata_file=fma_metadata.zip
 dataset_file=fma_small.zip
-help=false
 
 while getopts "hdmi" options; do
 	case "${options}" in
