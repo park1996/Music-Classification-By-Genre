@@ -11,7 +11,7 @@
 ## Setup:
 ```
 # Setup environment
-$ ./setup_env.sh
+$ ./setup_env.sh -m
 ```
 
 ## Test:
