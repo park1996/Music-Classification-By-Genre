@@ -40,8 +40,6 @@ while getopts "hdmi" options; do
 	esac
 done
 
-
-
 if [[ $download_metadata -eq 0 && $download_dataset -eq 0 && $install_packages -eq 0 ]] ; then
 	print_help
 	exit 0
@@ -52,7 +50,6 @@ if [[ $install_packages -eq 1 ]] ; then
 	echo "Installing packages"
 	pip3 install numpy matplotlib librosa tqdm
 fi
-
 
 # Download metadata
 if [[ $download_metadata -eq 1 ]] ; then
