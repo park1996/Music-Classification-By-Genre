@@ -31,6 +31,7 @@ $ python3 -m unit_test.py
 * Pre-computed features are part of the metadata such as MFCC, spectral contrast, and Tonnetz
 * The training, validation, and test dataset sizes are 6400, 800, and 800 respectively 
 * The metadata for all tracks can be downloaded here: [fma_metadata.zip](https://os.unil.cloud.switch.ch/fma/fma_metadata.zip) - size is 342 MB
+* A collection of Mel Spectrograms for the dataset can be found here: [fma_spectrogram.zip](https://drive.google.com/open?id=1mzDKmLba9CooaCL-46H1fmxBD2m4ovhP)
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
 
 
