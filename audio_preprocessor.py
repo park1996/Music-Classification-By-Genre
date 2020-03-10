@@ -18,11 +18,16 @@ class audio_preprocessor:
         # Audio and Mel Spectorgram directories
         self.AUDIO_DATASET_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fma_small')
         self.MEL_SPECTROGRAM_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fma_spectrogram')
+        self.list_of_all_audio_files = []
         self.__find_audio_files()
 
     def __find_audio_files(self):
         ''' Find audio files '''
-        self.list_of_all_audio_files = []
+
+        if not os.path.exists(self.AUDIO_DATASET_DIR):
+            print ("Failed to find audio files. Please download dataset")
+            return
+        
         for dirpath, subdirs, files in os.walk(self.AUDIO_DATASET_DIR):
             for file in files:
                 if file.endswith('.mp3'):

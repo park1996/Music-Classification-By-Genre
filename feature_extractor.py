@@ -66,7 +66,6 @@ class feature_extractor:
         self.TOP_LEVEL = 'top_level'
         self.RAW= 'raw'
 
-
         self.feature_types_str = {}
         self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
         self.feature_types_str[feature_type.MFCC] = 'mfcc';
@@ -86,6 +85,7 @@ class feature_extractor:
         self.statistic_types_str[statistic_type.MIN] = 'min';
         self.statistic_types_str[statistic_type.SKEW] = 'skew';
         self.statistic_types_str[statistic_type.STD] = 'std';
+        self.list_of_all_song_ids = []
 
         self.__load_data()
 
@@ -99,7 +99,7 @@ class feature_extractor:
         self.__load_genres()
 
         # Load features last
-        self.features = self.load(self.FEATURES_FILE)
+        self.__load_features()
 
         print ('Elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
 
@@ -107,7 +107,7 @@ class feature_extractor:
     def __load_tracks(self):
         '''  Load tracks metadata and dataset '''
         # Load tracks metadata
-        self.tracks = self.load(self.TRACKS_FILE)
+        self.tracks = self.__load(self.TRACKS_FILE)
 
         # Get training, validation, and test datasets
         self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
@@ -115,14 +115,14 @@ class feature_extractor:
         self.validation_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.VALIDATION]
         self.test_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TEST]
 
-        self.list_of_all_song_ids = self.get_training_dataset_song_ids()
+        self.list_of_all_song_ids.extend(self.get_training_dataset_song_ids())
         self.list_of_all_song_ids.extend(self.get_validation_dataset_song_ids())
         self.list_of_all_song_ids.extend(self.get_test_dataset_song_ids())
 
     def __load_genres(self):
         '''  Load genre metadata '''
         # Load genre metadata
-        self.genres = self.load(self.GENRE_FILE)
+        self.genres = self.__load(self.GENRE_FILE)
 
         # Get genres in dataset
         list_of_all_genres = self.training_dataset[self.TRACK, self.GENRES_TOP].to_list()
@@ -132,7 +132,11 @@ class feature_extractor:
         genre_array = np.array(list_of_all_genres)
         self.list_of_all_genres = np.unique(genre_array).tolist()
 
-    def load(self, filepath):
+    def __load_features(self):
+        '''  Load features metadata '''
+        self.features = self.__load(self.FEATURES_FILE)
+
+    def __load(self, filepath):
         ''' The following method was taken from the FMA repository and heavily modified.'''
         ''' Original source code: ttps://github.com/mdeff/fma/blob/master/utils.py '''
 
@@ -140,6 +144,10 @@ class feature_extractor:
         CHUNK_SIZE = 5000
 
         print ('Loading ' + filename + '...')
+
+        if not os.path.exists(filepath):
+            print ("Failed to find metadata file\n")
+            return
 
         if self.FEATURES in filename:
             HEADER_SIZE = 1
