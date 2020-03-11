@@ -33,7 +33,7 @@ class audio_preprocessor:
                 if file.endswith('.mp3'):
                     self.list_of_all_audio_files.append(os.path.join(dirpath, file))
 
-        print('Found ' + str(len(self.list_of_all_audio_files)) + ' files')
+        print('Found ' + str(len(self.list_of_all_audio_files)) + ' songs')
 
     def audio_read(self, audio_filepath):
         ''' Read audio wav file and normalize to [-1, 1)  '''
