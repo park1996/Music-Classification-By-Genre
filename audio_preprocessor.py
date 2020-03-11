@@ -121,6 +121,7 @@ class audio_preprocessor:
         HEIGHT = 4
         spect = self.get_mel_spectrogram(audio_filepath)
         plt.figure(figsize=(WIDTH, HEIGHT))
+        plt.axis('off')
         librosa.display.specshow(spect, y_axis='mel', fmax=20000, x_axis='time')
 
     def save_mel_spectrogram(self, audio_filepath, output_filepath):
