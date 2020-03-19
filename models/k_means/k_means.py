@@ -3,6 +3,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
+from collections import Counter
 
 np.random.seed(0)
 
@@ -26,25 +27,14 @@ class k_means:
                 break
             centers = new_centers
             it += 1
-        
-        #labelling clusters
-        cluster_labels =[]
-        print (features.shape)
-        print (target_labels.shape)
-        input_matrix = np.hstack((features, target_labels))
-        print (input_matrix)
+        return (centers, predicted_clusters, it)
 
-        for iteration in range(number_of_clusters):
-            cluster = input_matrix[predicted_clusters == iteration, :]
-            counts = np.bincount(cluster[:, -1])
-            cluster_labels[iteration] = np.argmax(counts)
-
-        return (centers, predicted_clusters, cluster_labels, it)
-
+    # intialize random k centers
     def initialize_centers(self, features, number_of_clusters):
         random_indices = np.random.choice(features.shape[0], number_of_clusters, replace=False)
         return features[random_indices], random_indices
 
+    #update centers to new centers which are means of the clusters
     def update_centers(self, features, predicted_clusters, number_of_clusters, centers):
         centers = np.zeros((number_of_clusters, features.shape[1]))
         for iteration in range(number_of_clusters):
@@ -53,21 +43,48 @@ class k_means:
             centers[iteration,:] = np.mean(cluster, axis = 0)
         return centers
 
+    #assign cluster indices
     def assign_clusters(self, features, centers):
         distances = cdist(features, centers)
         return np.argmin(distances, axis=1)
 
+    # check if the centers are converged
     def is_converged(self, centers, new_centers):  
         return (set([tuple(center) for center in centers]) == 
         set([tuple(center) for center in new_centers]))
     
+    #calculate accuracy rate
     def accuracy_rate(self, predicted_labels, target_labels):
         hit = 0
         for it in range(len(predicted_labels)):
             if target_labels[it] == predicted_labels[it]:
                 hit += 1
         return hit/(len(predicted_labels))
+    
+    #map the cluster indices to the correct labels
+    def map_labels(self, features, target_labels, predicted_clusters, number_of_clusters):
+        cluster_labels =np.zeros(len(target_labels))
+        input_matrix = np.hstack((features, target_labels.reshape((len(target_labels), 1))))
+        for iteration in range(number_of_clusters):
+            cluster = input_matrix[predicted_clusters == iteration, :]
+            counts = Counter(cluster[:, -1])
+            cluster_labels[iteration] = counts.most_common(1)[0][0]
+        return cluster_labels.astype(int)
+    
+    #label data
+    def label_clusters(self, predicted_clusters, cluster_labels, label_size):
+        predicted_labels = np.zeros(label_size)
+        for i in range(label_size):
+            predicted_labels[i] = cluster_labels[predicted_clusters[i]]
+        return predicted_labels
 
-    def display_clusters(self, clusters, labels, title, FIG=1, figsize=(8.5, 6), marketsize=4, alpha=0.75):
+    #plot the clusters   
+    def display_clusters(self, features, labels, number_of_clusters, title, FIG=1, figsize=(8.5, 6), markersize=4, alpha=0.75):
         plt.figure(FIG, figsize)
         plt.title(title)
+        for it in range(number_of_clusters):
+            cluster = features[labels == it, :]
+            color = np.random.rand(3,)
+            plt.plot(cluster[:, 0], cluster[:, 1], c=color, marker='^', markersize=markersize, alpha=alpha, linestyle='None')
+        plt.axis('equal')
+        plt.show()
