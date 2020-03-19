@@ -16,17 +16,30 @@ class k_means:
         predicted_clusters = kmeans.predict(features)
     
     def train(self, features, target_labels, number_of_clusters):
-        centers, indices = initialize_centers(features, number_of_clusters)
+        centers, indices = self.initialize_centers(features, number_of_clusters)
         predicted_clusters = []
         it = 0 
         while True:
-            predicted_clusters = assign_clusters(features, centers)
-            new_centers = update_centers(features, predicted_clusters, number_of_clusters, centers)
-            if is_converged(centers, new_centers):
+            predicted_clusters = self.assign_clusters(features, centers)
+            new_centers = self.update_centers(features, predicted_clusters, number_of_clusters, centers)
+            if self.is_converged(centers, new_centers):
                 break
             centers = new_centers
             it += 1
-        return (centers, predicted_clusters, it)
+        
+        #labelling clusters
+        cluster_labels =[]
+        print (features.shape)
+        print (target_labels.shape)
+        input_matrix = np.hstack((features, target_labels))
+        print (input_matrix)
+
+        for iteration in range(number_of_clusters):
+            cluster = input_matrix[predicted_clusters == iteration, :]
+            counts = np.bincount(cluster[:, -1])
+            cluster_labels[iteration] = np.argmax(counts)
+
+        return (centers, predicted_clusters, cluster_labels, it)
 
     def initialize_centers(self, features, number_of_clusters):
         random_indices = np.random.choice(features.shape[0], number_of_clusters, replace=False)
@@ -50,9 +63,9 @@ class k_means:
     
     def accuracy_rate(self, predicted_labels, target_labels):
         hit = 0
-        for (it in range(len(predicted_labels))):
-            if (target_labels[it] == predicted_labels[it]):
-                hit++
+        for it in range(len(predicted_labels)):
+            if target_labels[it] == predicted_labels[it]:
+                hit += 1
         return hit/(len(predicted_labels))
 
     def display_clusters(self, clusters, labels, title, FIG=1, figsize=(8.5, 6), marketsize=4, alpha=0.75):
