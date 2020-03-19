@@ -60,7 +60,7 @@ class feature_extractor:
         self.TEST = 'test'
         self.FEATURES = 'features'
         self.GENRES = 'genres'
-        self.GENRES_TOP = 'genres_top'
+        self.GENRES_TOP = 'genre_top'
         self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
         self.TOP_LEVEL = 'top_level'
