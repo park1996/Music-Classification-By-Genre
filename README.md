@@ -32,6 +32,7 @@ $ python3 -m unit_test.py
 * The training, validation, and test dataset sizes are 6400, 800, and 800 respectively 
 * The metadata for all tracks can be downloaded here: [fma_metadata.zip](https://os.unil.cloud.switch.ch/fma/fma_metadata.zip) - size is 342 MB
 * A collection of Mel Spectrogram images for the dataset can be found here: [fma_spectrogram.zip](https://drive.google.com/open?id=1mzDKmLba9CooaCL-46H1fmxBD2m4ovhP) - size is 2 GB
+* Dataset is located here: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip) - size is 7.2 GB
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
 
 
