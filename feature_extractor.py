@@ -105,7 +105,7 @@ class feature_extractor:
 
 
     def __load_tracks(self):
-        '''  Load tracks metadata and dataset '''
+        '''  Load tracks metadata '''
         # Load tracks metadata
         self.tracks = self.__load(self.TRACKS_FILE)
 
