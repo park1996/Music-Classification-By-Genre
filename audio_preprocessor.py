@@ -141,6 +141,12 @@ class audio_preprocessor:
         plt.close()
         return
 
+    def find_song_filepath(self, song_id):
+        file_name = '{0:06}.mp3'.format(song_id)
+        for root, dirs, files in os.walk(self.AUDIO_DATASET_DIR):
+            if file_name in files:
+                return os.path.join(root, file_name)
+
 processor = audio_preprocessor()
 for file in tqdm(processor.list_of_all_audio_files):
     output_file = os.path.join(processor.MEL_SPECTROGRAM_DIR, os.path.splitext(os.path.basename(file))[0] + '.png')
