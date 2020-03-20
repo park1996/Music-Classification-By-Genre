@@ -47,7 +47,7 @@ fi
 # Install python packages
 if [[ $install_packages -eq 1 ]] ; then
 	echo "Installing packages"
-	pip3 install numpy matplotlib librosa tqdm
+	pip3 install numpy matplotlib librosa tqdm ffmpeg
 fi
 
 # Download metadata
