@@ -6,6 +6,7 @@
 * LibROSA
 * NumPy
 * Matplotlib
+* FFmpeg
 * tqdm
 
 ## Setup:
