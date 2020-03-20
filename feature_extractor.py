@@ -105,7 +105,7 @@ class feature_extractor:
 
 
     def __load_tracks(self):
-        '''  Load tracks metadata and dataset '''
+        '''  Load tracks metadata '''
         # Load tracks metadata
         self.tracks = self.__load(self.TRACKS_FILE)
 
@@ -138,7 +138,7 @@ class feature_extractor:
 
     def __load(self, filepath):
         ''' The following method was taken from the FMA repository and heavily modified.'''
-        ''' Original source code: ttps://github.com/mdeff/fma/blob/master/utils.py '''
+        ''' Original source code: https://github.com/mdeff/fma/blob/master/utils.py '''
 
         filename = os.path.basename(filepath)
         CHUNK_SIZE = 5000
