@@ -19,11 +19,13 @@ if __name__ == '__main__':
     trainTrackID = myFE.get_training_dataset_song_ids()
     trainDataLst = []
     trainGenreLst = []
-    trainGenreDict = {}
-    print('Now loading training data...')
+    genreDict = {}
     nextGenreID = 0
+    print('Now loading training data...')
+
     spectrogramLowestCol = 2147483647
     spectrogramLowestRow = 2147483647
+    #Load the Training data...
     for path in audioPathList:
         trackIDStr = os.path.splitext(ntpath.basename(path))[0]
         trackIDInt = int(trackIDStr)
@@ -36,15 +38,45 @@ if __name__ == '__main__':
             if(len(currentSpectrogram) < spectrogramLowestRow):
                 spectrogramLowestRow=len(currentSpectrogram)
             print('Loading track '+trackIDStr + ' with genre '+currentGenre)
-            if trainGenreDict.get(currentGenre) == None:
-                trainGenreDict[currentGenre] = nextGenreID
+            if genreDict.get(currentGenre) == None:
+                genreDict[currentGenre] = nextGenreID
                 currentGenreID = nextGenreID
                 nextGenreID+=1
             else:
-                currentGenreID = trainGenreDict[currentGenre]
+                currentGenreID = genreDict[currentGenre]
             trainDataLst.append(currentSpectrogram)
             trainGenreLst.append(currentGenreID)
+    print('Training data loaded.')
 
+    #Load the testing data...
+    print('Now loading testing data...')
+    testTrackID = myFE.get_training_dataset_song_ids()
+    testDataLst = []
+    testGenreLst = []
+    for path in audioPathList:
+        trackIDStr = os.path.splitext(ntpath.basename(path))[0]
+        trackIDInt = int(trackIDStr)
+        if os.path.exists(path) and (trackIDInt in testTrackID):
+            currentGenre = myFE.get_genre(trackIDInt)
+            currentGenreID = -1
+            currentSpectrogram = myAP.get_mel_spectrogram(path)
+            if(len(currentSpectrogram[0]) < spectrogramLowestCol):
+                spectrogramLowestCol=len(currentSpectrogram[0])
+            if(len(currentSpectrogram) < spectrogramLowestRow):
+                spectrogramLowestRow=len(currentSpectrogram)
+            print('Loading track '+trackIDStr + ' with genre '+currentGenre)
+            if genreDict.get(currentGenre) == None:
+                genreDict[currentGenre] = nextGenreID
+                currentGenreID = nextGenreID
+                nextGenreID+=1
+            else:
+                currentGenreID = genreDict[currentGenre]
+            testDataLst.append(currentSpectrogram)
+            testGenreLst.append(currentGenreID)
+    print('Training data loaded.')
+
+    print('Processing data...')
+    #Truncate the frame for transformation
     for i in range(0, len(trainDataLst)):
         spectrogram = trainDataLst[i]
         if len(spectrogram[0]) <= spectrogramLowestCol and len(spectrogram) <= spectrogramLowestRow:
@@ -54,16 +86,34 @@ if __name__ == '__main__':
         while len(spectrogram) > spectrogramLowestRow:
             spectrogram = np.delete(spectrogram, len(spectrogram)-1, 0)
         trainDataLst[i] = spectrogram
-    print('Creating data model...')
+
+    for i in range(0, len(testDataLst)):
+        spectrogram = testDataLst[i]
+        if len(spectrogram[0]) <= spectrogramLowestCol and len(spectrogram) <= spectrogramLowestRow:
+            continue;
+        while len(spectrogram[0]) > spectrogramLowestCol:
+            spectrogram = np.delete(spectrogram, len(spectrogram[0])-1, 1)
+        while len(spectrogram) > spectrogramLowestRow:
+            spectrogram = np.delete(spectrogram, len(spectrogram)-1, 0)
+        testDataLst[i] = spectrogram
+
+    #Transform the format of data into something that can be used
     num_rows = spectrogramLowestRow
     num_columns = spectrogramLowestCol
     num_channels = 1
-    myModel = cnn((num_rows, num_columns, num_channels))
-    print('Training data model...')
     trainData = np.array(trainDataLst)
     trainData = trainData.reshape(trainData.shape[0], num_rows, num_columns, num_channels)
     trainGenre = np.array(trainGenreLst)
 
+    testData = np.array(testDataLst)
+    testData = testData.reshape(testData.shape[0], num_rows, num_columns, num_channels)
+    testGenre = np.array(testGenreLst)
 
+    print('Creating data model...')
+
+    myModel = cnn((num_rows, num_columns, num_channels))
     print('Now training model...')
     myModel.train(trainData, trainGenre)
+
+    print('Now testing the model we trained...')
+    myModel.test(testData, testGenre)

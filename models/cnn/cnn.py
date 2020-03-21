@@ -19,3 +19,5 @@ class cnn:
         self.MODEL.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     def train(self, features, target_labels):
         self.MODEL.fit(x=features, y=target_labels, epochs=10)
+    def test(self, features, target_labels):
+        self.MODEL.evaluate(x=features, y=target_labels)
