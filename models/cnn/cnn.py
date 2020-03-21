@@ -20,4 +20,5 @@ class cnn:
     def train(self, features, target_labels):
         self.MODEL.fit(x=features, y=target_labels, epochs=10)
     def test(self, features, target_labels):
-        self.MODEL.evaluate(x=features, y=target_labels)
+        (eval_loss, eval_accuracy) = self.MODEL.evaluate(x=features, y=target_labels)
+        return (eval_loss, eval_accuracy)

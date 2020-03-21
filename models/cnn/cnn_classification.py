@@ -115,5 +115,8 @@ if __name__ == '__main__':
     print('Now training model...')
     myModel.train(trainData, trainGenre)
 
+    #Evaluate the model using test set. Code modifed based on https://towardsdatascience.com/a-simple-cnn-multi-image-classifier-31c463324fa
     print('Now testing the model we trained...')
-    myModel.test(testData, testGenre)
+    (eval_loss, eval_accuracy) = myModel.test(testData, testGenre)
+    print(“[INFO] accuracy: {:.2f}%”.format(eval_accuracy * 100))
+    print(“[INFO] Loss: {}”.format(eval_loss))
