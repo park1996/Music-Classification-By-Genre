@@ -16,10 +16,11 @@ from feature_extractor import feature_extractor as fe
 
 if __name__ == '__main__':
 
-    trainingSetSize = 10
-    testingSetSize = 10
+    #Configure the size of training, testing sets and the number of classes we're matching against, and whether we will randomly picking value or sequentially picking value
+    trainingSetSize = 1000
+    testingSetSize = 1000
     classSize = trainingSetSize
-    randomize = True
+    randomize = False
 
     myAP = ap()
     myFE = fe()
@@ -161,23 +162,23 @@ if __name__ == '__main__':
     for classID in trainPredictedClasses:
         trainPredictedClassesStr.append(reverseclassDict[classID])
     with open('trainset_prediction_result_'+ currentTimeStr +'.csv', mode='w') as csv_file:
-        fieldnames = ['trackID', 'predictedClass', 'realClass']
+        fieldnames = ['trackID', 'predictedClass', 'realClass', 'correct']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
         writer.writeheader()
         for j in range(0, len(trainTrackIDLst)):
             #print('Track ' + str(testTrackIdLst[j]) + ' has genre ' + testClassStrLst[j] + ' and our model predict it has genre ' + predictedClassesStr[j])
-            writer.writerow({'trackID': trainTrackIdStrLst[j], 'predictedClass': trainPredictedClassesStr[j], 'realClass': trainClassStrLst[j]})
+            writer.writerow({'trackID': trainTrackIdStrLst[j], 'predictedClass': trainPredictedClassesStr[j], 'realClass': trainClassStrLst[j], 'correct': str(trainPredictedClassesStr[j] == trainClassStrLst[j])})
 
     testPredictedClasses = myModel.predict(testData)
     testPredictedClassesStr = []
     for classID in testPredictedClasses:
         testPredictedClassesStr.append(reverseclassDict[classID])
     with open('testset_prediction_result_'+ currentTimeStr + '.csv', mode='w') as csv_file:
-        fieldnames = ['trackID', 'predictedClass', 'realClass']
+        fieldnames = ['trackID', 'predictedClass', 'realClass', 'correct']
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
         writer.writeheader()
         for j in range(0, len(testTrackIdLst)):
             #print('Track ' + str(testTrackIdLst[j]) + ' has genre ' + testClassStrLst[j] + ' and our model predict it has genre ' + predictedClassesStr[j])
-            writer.writerow({'trackID': testTrackIdStrLst[j], 'predictedClass': testPredictedClassesStr[j], 'realClass': testClassStrLst[j]})
+            writer.writerow({'trackID': testTrackIdStrLst[j], 'predictedClass': testPredictedClassesStr[j], 'realClass': testClassStrLst[j], 'correct': str(testPredictedClassesStr[j] == testClassStrLst[j])})
