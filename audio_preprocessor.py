@@ -27,7 +27,7 @@ class audio_preprocessor:
         if not os.path.exists(self.AUDIO_DATASET_DIR):
             print ("Failed to find audio files. Please download dataset")
             return
-        
+
         for dirpath, subdirs, files in os.walk(self.AUDIO_DATASET_DIR):
             for file in files:
                 if file.endswith('.mp3'):
@@ -147,9 +147,10 @@ class audio_preprocessor:
             if file_name in files:
                 return os.path.join(root, file_name)
 
-processor = audio_preprocessor()
-for file in tqdm(processor.list_of_all_audio_files):
-    output_file = os.path.join(processor.MEL_SPECTROGRAM_DIR, os.path.splitext(os.path.basename(file))[0] + '.png')
-    if not os.path.exists(output_file):
-        processor.save_mel_spectrogram(file, output_file)
+if __name__ == '__main__':
+    processor = audio_preprocessor()
+    for file in tqdm(processor.list_of_all_audio_files):
+        output_file = os.path.join(processor.MEL_SPECTROGRAM_DIR, os.path.splitext(os.path.basename(file))[0] + '.png')
+        if not os.path.exists(output_file):
+            processor.save_mel_spectrogram(file, output_file)
 
