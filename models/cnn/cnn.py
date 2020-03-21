@@ -22,3 +22,5 @@ class cnn:
     def test(self, features, target_labels):
         (eval_loss, eval_accuracy) = self.MODEL.evaluate(x=features, y=target_labels)
         return (eval_loss, eval_accuracy)
+    def predict(self, features):
+        return self.MODEL.predict_classes(features)
