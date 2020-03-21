@@ -1,7 +1,7 @@
 import random
-import math
 import feature_extractor as FE
 from sklearn import svm
+from sklearn.metrics import accuracy_score
 
 class svm:
     def __init__(self):
@@ -98,7 +98,7 @@ class svm:
             curr_model = svm.SVC()
             curr_model.fit(TR_subset_X, TR_subset_T)
             CL = curr_model.predict(self.VA_X)
-            self.VA_ACC[i] = self.accuracy_eval(CL, self.VA_T)
+            self.VA_ACC[i] = accuracy_score(self.VA_Y,CL)
             if self.VA_ACC[i] >= self.VA_ACC[self.i_HIGHEST_ACC]:
                 self.MODEL = curr_model
                 self.i_HIGHEST_ACC = i
@@ -111,16 +111,6 @@ class svm:
         X = self.TR_X[i*subset_N:(i+1)*subset_N]
         t = self.TR_T[i*subset_N:(i+1)*subset_N]
         return X, t
-
-    def __accuracy_eval(self, labels, t):
-        ''' evaluates SVM model using multiclass log loss evaluation'''
-        acc = 0
-        N = len(t)
-        for i in range(N):
-            if labels[i] == t[i]:
-                acc += 1
-        acc /= N
-        return acc
 
     def __test_model(self):
 
@@ -140,3 +130,4 @@ class svm:
     
     def __get_TEST_ACC(self):
         return self.TEST_ACC
+    
