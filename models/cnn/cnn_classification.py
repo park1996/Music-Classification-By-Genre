@@ -15,14 +15,12 @@ if __name__ == '__main__':
 
     myAP = ap()
     myFE = fe()
-    myModel = cnn((num_rows, num_columns, num_channels))
     audioPathList = myAP.list_of_all_audio_files
     trainTrackID = myFE.get_training_dataset_song_ids()
     trainDataLst = []
     trainGenreLst = []
     trainGenreDict = {}
     print('Now loading training data...')
-    i = 0
     nextGenreID = 0
     spectrogramLowestCol = 2147483647
     spectrogramLowestRow = 2147483647
@@ -36,7 +34,7 @@ if __name__ == '__main__':
             if(len(currentSpectrogram[0]) < spectrogramLowestCol):
                 spectrogramLowestCol=len(currentSpectrogram[0])
             if(len(currentSpectrogram) < spectrogramLowestRow):
-                spectrogramLowestRow=len(currentSpectrogram[0])
+                spectrogramLowestRow=len(currentSpectrogram)
             print('Loading track '+trackIDStr + ' with genre '+currentGenre)
             if trainGenreDict.get(currentGenre) == None:
                 trainGenreDict[currentGenre] = nextGenreID
@@ -46,9 +44,6 @@ if __name__ == '__main__':
                 currentGenreID = trainGenreDict[currentGenre]
             trainDataLst.append(currentSpectrogram)
             trainGenreLst.append(currentGenreID)
-            i+= 1
-            if i > 10:
-                break;
 
     for i in range(0, len(trainDataLst)):
         spectrogram = trainDataLst[i]
