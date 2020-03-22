@@ -1,4 +1,5 @@
 from keras.models import Sequential
+from keras.models import load_model
 from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D
 import tensorflow as tf
 
@@ -24,3 +25,7 @@ class cnn:
         return (eval_loss, eval_accuracy)
     def predict(self, features):
         return self.MODEL.predict_classes(features)
+    def save(self, model_path):
+        self.MODEL.save(model_path)
+    def load(self, model_path):
+        self.MODEL = load_model(model_path)

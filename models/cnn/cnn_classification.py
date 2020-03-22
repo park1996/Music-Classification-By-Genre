@@ -17,8 +17,8 @@ from feature_extractor import feature_extractor as fe
 if __name__ == '__main__':
 
     #Configure the size of training, testing sets and the number of classes we're matching against, and whether we will randomly picking value or sequentially picking value
-    trainingSetSize = 1000
-    testingSetSize = 1000
+    trainingSetSize = 10
+    testingSetSize = 10
     classSize = trainingSetSize
     randomize = False
 
@@ -56,7 +56,7 @@ if __name__ == '__main__':
             else:
                 currentClassID = classDict[currentClass]
             print('Loading track '+trackIDStr + ' with genre '+currentClass + ' ('+str(i+1)+'/'+str(trainingSetSize)+')')
-            currentSpectrogram = myAP.get_mel_spectrogram(path)
+            currentSpectrogram = myAP.get_mel_spectrogram_with_cache(path)
             if(len(currentSpectrogram[0]) < spectrogramLowestCol):
                 spectrogramLowestCol=len(currentSpectrogram[0])
             if(len(currentSpectrogram) < spectrogramLowestRow):
@@ -74,7 +74,7 @@ if __name__ == '__main__':
     #Load the testing data...
     i = 0
     print('Now loading testing data...')
-    testTrackID = myFE.get_test_dataset_song_ids()
+    testTrackID = myFE.get_validation_dataset_song_ids()
     testDataLst = []
     testClassLst = []
     testClassStrLst = []
@@ -91,7 +91,7 @@ if __name__ == '__main__':
             else:
                 currentClassID = classDict[currentClass]
             print('Loading track '+trackIDStr + ' with genre '+currentClass + ' ('+str(i+1)+'/'+str(testingSetSize)+')')
-            currentSpectrogram = myAP.get_mel_spectrogram(path)
+            currentSpectrogram = myAP.get_mel_spectrogram_with_cache(path)
             if(len(currentSpectrogram[0]) < spectrogramLowestCol):
                 spectrogramLowestCol=len(currentSpectrogram[0])
             if(len(currentSpectrogram) < spectrogramLowestRow):
