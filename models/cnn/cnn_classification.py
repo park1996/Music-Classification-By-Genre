@@ -157,7 +157,7 @@ if __name__ == '__main__':
     currentTimeStr = datetime.now().strftime("%Y%m%d%H%M%S")
     reverseclassDict = list(classDict.keys())
 
-    trainPredictedClasses = myModel.predict(testData)
+    trainPredictedClasses = myModel.predict(trainData)
     trainPredictedClassesStr = []
     for classID in trainPredictedClasses:
         trainPredictedClassesStr.append(reverseclassDict[classID])
@@ -166,7 +166,7 @@ if __name__ == '__main__':
         writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
 
         writer.writeheader()
-        for j in range(0, len(trainTrackIDLst)):
+        for j in range(0, len(trainTrackIdStrLst)):
             #print('Track ' + str(testTrackIdLst[j]) + ' has genre ' + testClassStrLst[j] + ' and our model predict it has genre ' + predictedClassesStr[j])
             writer.writerow({'trackID': trainTrackIdStrLst[j], 'predictedClass': trainPredictedClassesStr[j], 'realClass': trainClassStrLst[j], 'correct': str(trainPredictedClassesStr[j] == trainClassStrLst[j])})
 
