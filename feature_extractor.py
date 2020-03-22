@@ -17,7 +17,7 @@ class feature_type(Enum):
     SPEC_ROLLOFF = 7
     RMS_ENERGY = 8
     ZERO_CROSSING_RATE = 9
-
+    
 class statistic_type(Enum):
     KURTOSIS = 1
     MAX = 2
@@ -25,7 +25,7 @@ class statistic_type(Enum):
     MEDIAN = 4
     MIN = 5
     SKEW = 6
-    STD = 7
+    STD = 7  
 
 class feature_extractor:
     ''' Extracts features from metadata folder '''
@@ -64,7 +64,8 @@ class feature_extractor:
         self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
         self.TOP_LEVEL = 'top_level'
-        self.RAW= 'raw'
+        self.RAW = 'raw'
+        self.STATISTICS = 'statistics'
 
         self.feature_types_str = {}
         self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
@@ -159,7 +160,7 @@ class feature_extractor:
             features = header
 
             for file_chunk in pd.read_csv(filepath, low_memory=False, chunksize=CHUNK_SIZE):
-                temp = file_chunk.loc[file_chunk['feature'].isin(ids)]
+                temp = file_chunk.loc[file_chunk[self.FEATURE].isin(ids)]
 
                 if temp.shape[0] > 0:
                     features = features.append(temp)
@@ -173,10 +174,10 @@ class feature_extractor:
 
         if self.GENRES in filename:
             genre_list = []
-
+                
             for chunk in  pd.read_csv(filepath, index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
                 genre_list.append(chunk)
-
+  
             print ('Loaded ' + filename  + '\n')
 
             return pd.concat(genre_list,sort=False)
@@ -184,18 +185,18 @@ class feature_extractor:
 
         if self.TRACKS in filename:
             track_list = []
-
+                
             for chunk in  pd.read_csv(filepath, index_col=0, header=[0, 1], chunksize=CHUNK_SIZE, low_memory=False):
                 track_list.append(chunk)
 
             tracks = pd.concat(track_list,sort=False)
-
+  
             COLUMNS = [('track', 'tags'), ('album', 'tags'), ('artist', 'tags'),
                                ('track', 'genres'), ('track', 'genres_all')]
 
             for column in COLUMNS:
                     tracks[column] = tracks[column].map(ast.literal_eval)
-
+ 
             COLUMNS = [('track', 'date_created'), ('track', 'date_recorded'),
                                ('album', 'date_created'), ('album', 'date_released'),
                                ('artist', 'date_created'), ('artist', 'active_year_begin'),
@@ -246,7 +247,7 @@ class feature_extractor:
 
     def get_artist(self, track_id):
         ''' Get artist of track '''
-        ''' track_id - unique ID of the song in dataset '''
+        ''' track_id - unique ID of the song in dataset ''' 
         return self.tracks.loc[track_id, self.ARTIST][self.NAME]
 
     def get_feature(self, track_id, feat_type, stat_type):
@@ -258,7 +259,7 @@ class feature_extractor:
         stat_type_str = self.statistic_types_str[stat_type]
 
         ret = self.features.filter(regex=feat_type_str)
-        ret = ret.loc[str(track_id), ret.loc['statistics'] == stat_type_str]
+        ret = ret.loc[str(track_id), ret.loc[self.STATISTICS] == stat_type_str]
         ret_list = list(map(np.float32, ret.to_list()))
         return ret_list
 
