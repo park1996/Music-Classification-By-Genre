@@ -53,7 +53,7 @@ class TestExtractor(unittest.TestCase):
 
         print('Printing sample data...\n')
 
-        for i in dataset[:SAMPLE_SIZE]:
+        for i in dataset[len(dataset)-SAMPLE_SIZE:]:
             print('Song: #' + str(i))
             print('Title: ' + str(extractor.get_title(i)))
             print('Artist: ' + str(extractor.get_artist(i)))

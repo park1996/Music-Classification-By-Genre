@@ -165,6 +165,7 @@ class feature_extractor:
                     features = features.append(temp)
 
             features = features.set_index('feature')
+            features.index = features.index.map(str)
 
             print ('Loaded ' + filename + '\n')
 
@@ -257,8 +258,7 @@ class feature_extractor:
         stat_type_str = self.statistic_types_str[stat_type]
 
         ret = self.features.filter(regex=feat_type_str)
-        ret = ret.loc[:, ret.loc['statistics'] == stat_type_str]
-        ret = ret.loc[str(track_id)]
+        ret = ret.loc[str(track_id), ret.loc['statistics'] == stat_type_str]
         ret_list = list(map(np.float32, ret.to_list()))
         return ret_list
 
