@@ -18,6 +18,7 @@ class audio_preprocessor:
         # Audio and Mel Spectorgram directories
         self.AUDIO_DATASET_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fma_small')
         self.MEL_SPECTROGRAM_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fma_spectrogram')
+        self.MEL_SPECTROGRAM_CACHE_DIR = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'fma_spectrogram_cache')
         self.list_of_all_audio_files = []
         self.__find_audio_files()
 
@@ -27,7 +28,7 @@ class audio_preprocessor:
         if not os.path.exists(self.AUDIO_DATASET_DIR):
             print ("Failed to find audio files. Please download dataset")
             return
-        
+
         for dirpath, subdirs, files in os.walk(self.AUDIO_DATASET_DIR):
             for file in files:
                 if file.endswith('.mp3'):
@@ -109,12 +110,35 @@ class audio_preprocessor:
             shutil.rmtree(self.MEL_SPECTROGRAM_DIR)
         return
 
+    def del_mel_spect_cache_dir(self):
+        ''' Delete previous Mel Spectrogram directory '''
+        if os.path.exists(self.MEL_SPECTROGRAM_CACHE_DIR):
+            shutil.rmtree(self.MEL_SPECTROGRAM_CACHE_DIR)
+        return
+
+    def make_mel_spect_cache_dir(self):
+        ''' Make Mel Spectrogram directory '''
+        if not os.path.exists(self.MEL_SPECTROGRAM_CACHE_DIR):
+            os.makedirs(self.MEL_SPECTROGRAM_CACHE_DIR)
+        return
+
     def get_mel_spectrogram(self, audio_filepath):
         ''' Get Mel Spectrogram '''
         y, sr = self.audio_read(audio_filepath)
         spect = librosa.feature.melspectrogram(y=y, sr=sr,n_fft=2048, hop_length=512)
         spect = librosa.power_to_db(spect, ref=np.max)
         return spect
+
+    def get_mel_spectrogram_with_cache(self, audio_filepath):
+        ''' Load previously saved spectrogram if there is one, if not generate spectrogram and save it as a file reloadable '''
+        self.make_mel_spect_cache_dir()
+        output_file = os.path.join(self.MEL_SPECTROGRAM_CACHE_DIR, os.path.splitext(os.path.basename(audio_filepath))[0] + '.npy')
+        if os.path.exists(output_file):
+            return np.load(output_file)
+        else:
+            spectrogram = self.get_mel_spectrogram(audio_filepath)
+            np.save(output_file, spectrogram)
+            return spectrogram
 
     def prepare_mel_spectrogram_image(self, audio_filepath):
         WIDTH = 10
@@ -147,9 +171,10 @@ class audio_preprocessor:
             if file_name in files:
                 return os.path.join(root, file_name)
 
-processor = audio_preprocessor()
-for file in tqdm(processor.list_of_all_audio_files):
-    output_file = os.path.join(processor.MEL_SPECTROGRAM_DIR, os.path.splitext(os.path.basename(file))[0] + '.png')
-    if not os.path.exists(output_file):
-        processor.save_mel_spectrogram(file, output_file)
+if __name__ == '__main__':
+    processor = audio_preprocessor()
+    for file in tqdm(processor.list_of_all_audio_files):
+        output_file = os.path.join(processor.MEL_SPECTROGRAM_DIR, os.path.splitext(os.path.basename(file))[0] + '.png')
+        if not os.path.exists(output_file):
+            processor.save_mel_spectrogram(file, output_file)
 
