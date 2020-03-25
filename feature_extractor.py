@@ -60,12 +60,12 @@ class feature_extractor:
         self.TEST = 'test'
         self.FEATURES = 'features'
         self.GENRES = 'genres'
-        self.GENRES_TOP = 'genres_top'
+        self.GENRES_TOP = 'genre_top'
         self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
         self.TOP_LEVEL = 'top_level'
-        self.RAW= 'raw'
-
+        self.RAW = 'raw'
+        self.STATISTICS = 'statistics'
 
         self.feature_types_str = {}
         self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
@@ -86,6 +86,7 @@ class feature_extractor:
         self.statistic_types_str[statistic_type.MIN] = 'min';
         self.statistic_types_str[statistic_type.SKEW] = 'skew';
         self.statistic_types_str[statistic_type.STD] = 'std';
+        self.list_of_all_song_ids = []
 
         self.__load_data()
 
@@ -99,15 +100,15 @@ class feature_extractor:
         self.__load_genres()
 
         # Load features last
-        self.features = self.load(self.FEATURES_FILE)
+        self.__load_features()
 
         print ('Elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
 
 
     def __load_tracks(self):
-        '''  Load tracks metadata and dataset '''
+        '''  Load tracks metadata '''
         # Load tracks metadata
-        self.tracks = self.load(self.TRACKS_FILE)
+        self.tracks = self.__load(self.TRACKS_FILE)
 
         # Get training, validation, and test datasets
         self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
@@ -115,14 +116,14 @@ class feature_extractor:
         self.validation_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.VALIDATION]
         self.test_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TEST]
 
-        self.list_of_all_song_ids = self.get_training_dataset_song_ids()
+        self.list_of_all_song_ids.extend(self.get_training_dataset_song_ids())
         self.list_of_all_song_ids.extend(self.get_validation_dataset_song_ids())
         self.list_of_all_song_ids.extend(self.get_test_dataset_song_ids())
 
     def __load_genres(self):
         '''  Load genre metadata '''
         # Load genre metadata
-        self.genres = self.load(self.GENRE_FILE)
+        self.genres = self.__load(self.GENRE_FILE)
 
         # Get genres in dataset
         list_of_all_genres = self.training_dataset[self.TRACK, self.GENRES_TOP].to_list()
@@ -132,14 +133,22 @@ class feature_extractor:
         genre_array = np.array(list_of_all_genres)
         self.list_of_all_genres = np.unique(genre_array).tolist()
 
-    def load(self, filepath):
+    def __load_features(self):
+        '''  Load features metadata '''
+        self.features = self.__load(self.FEATURES_FILE)
+
+    def __load(self, filepath):
         ''' The following method was taken from the FMA repository and heavily modified.'''
-        ''' Original source code: ttps://github.com/mdeff/fma/blob/master/utils.py '''
+        ''' Original source code: https://github.com/mdeff/fma/blob/master/utils.py '''
 
         filename = os.path.basename(filepath)
         CHUNK_SIZE = 5000
 
         print ('Loading ' + filename + '...')
+
+        if not os.path.exists(filepath):
+            print ("Failed to find metadata file\n")
+            return
 
         if self.FEATURES in filename:
             HEADER_SIZE = 1
@@ -151,12 +160,13 @@ class feature_extractor:
             features = header
 
             for file_chunk in pd.read_csv(filepath, low_memory=False, chunksize=CHUNK_SIZE):
-                temp = file_chunk.loc[file_chunk['feature'].isin(ids)]
+                temp = file_chunk.loc[file_chunk[self.FEATURE].isin(ids)]
 
                 if temp.shape[0] > 0:
                     features = features.append(temp)
 
             features = features.set_index('feature')
+            features.index = features.index.map(str)
 
             print ('Loaded ' + filename + '\n')
 
@@ -164,10 +174,10 @@ class feature_extractor:
 
         if self.GENRES in filename:
             genre_list = []
-                
+
             for chunk in  pd.read_csv(filepath, index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
                 genre_list.append(chunk)
-  
+
             print ('Loaded ' + filename  + '\n')
 
             return pd.concat(genre_list,sort=False)
@@ -175,18 +185,18 @@ class feature_extractor:
 
         if self.TRACKS in filename:
             track_list = []
-                
+
             for chunk in  pd.read_csv(filepath, index_col=0, header=[0, 1], chunksize=CHUNK_SIZE, low_memory=False):
                 track_list.append(chunk)
 
             tracks = pd.concat(track_list,sort=False)
-  
+
             COLUMNS = [('track', 'tags'), ('album', 'tags'), ('artist', 'tags'),
                                ('track', 'genres'), ('track', 'genres_all')]
 
             for column in COLUMNS:
                     tracks[column] = tracks[column].map(ast.literal_eval)
- 
+
             COLUMNS = [('track', 'date_created'), ('track', 'date_recorded'),
                                ('album', 'date_created'), ('album', 'date_released'),
                                ('artist', 'date_created'), ('artist', 'active_year_begin'),
@@ -237,7 +247,7 @@ class feature_extractor:
 
     def get_artist(self, track_id):
         ''' Get artist of track '''
-        ''' track_id - unique ID of the song in dataset ''' 
+        ''' track_id - unique ID of the song in dataset '''
         return self.tracks.loc[track_id, self.ARTIST][self.NAME]
 
     def get_feature(self, track_id, feat_type, stat_type):
@@ -249,8 +259,7 @@ class feature_extractor:
         stat_type_str = self.statistic_types_str[stat_type]
 
         ret = self.features.filter(regex=feat_type_str)
-        ret = ret.loc[:, ret.loc['statistics'] == stat_type_str]
-        ret = ret.loc[str(track_id)]
+        ret = ret.loc[str(track_id), ret.loc[self.STATISTICS] == stat_type_str]
         ret_list = list(map(np.float32, ret.to_list()))
         return ret_list
 

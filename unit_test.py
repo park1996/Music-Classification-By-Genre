@@ -69,13 +69,21 @@ class TestProcessor(unittest.TestCase):
 
     def test_display_spectrogram(self):
         ''' Get training dataset '''
+        training_set_song_ids = extractor.get_training_dataset_song_ids()
+
         size = len(processor.list_of_all_audio_files)
 
         if size > 0:
             print('---------------------------------------------------------')
             print('Audio data files (total size: ' + str(len(processor.list_of_all_audio_files)) + ')')
             print('---------------------------------------------------------\n')
-            processor.plot_mel_spectrogram(processor.list_of_all_audio_files[0])
+
+            file_path = processor.find_song_filepath(training_set_song_ids[0])
+            print ('Song ID: ' + str(training_set_song_ids[0]))
+            print ('Plotting spectrogram for song: ' + str(file_path))
+
+            processor.plot_mel_spectrogram(file_path)
+
 
 if __name__ == '__main__':
     unittest.main()
