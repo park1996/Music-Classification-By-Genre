@@ -169,7 +169,6 @@ class feature_extractor:
             features.index = features.index.map(str)
 
             print ('Loaded ' + filename + '\n')
-
             return features
 
         if self.GENRES in filename:
@@ -221,7 +220,7 @@ class feature_extractor:
 
     def get_all_song_ids(self):
         ''' Get all song ids '''
-        return self.self.list_of_all_song_ids
+        return self.list_of_all_song_ids
 
     def get_training_dataset_song_ids(self):
         ''' Get all song ids in training set '''
@@ -262,6 +261,15 @@ class feature_extractor:
         ret = ret.loc[str(track_id), ret.loc[self.STATISTICS] == stat_type_str]
         ret_list = list(map(np.float32, ret.to_list()))
         return ret_list
+    
+    def get_features_as_nparray(self, track_ids):
+        '''Return feature dataframe as numpy array'''
+        statistic_types = self.statistic_types_str.values()
+        feature_types = self.feature_types_str.values()
+        feature_types_regex = '|'.join(feature_types)
+        ret = self.features.filter(regex=feature_types_regex)
+        ret = ret.loc[list(map(str, track_ids)), ret.loc[self.STATISTICS].isin(statistic_types)]
+        return ret.apply(np.float32).to_numpy()
 
     def get_all_genres(self):
         ''' Return all genre types '''
