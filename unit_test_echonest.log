@@ -1,12 +1,12 @@
 Finding the following metadata files:
 
-C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\tracks.csv
+C:\Music-Classification-Genre\fma_metadata\tracks.csv
 
-C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\genres.csv
+C:\Music-Classification-Genre\fma_metadata\genres.csv
 
-C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\features.csv
+C:\Music-Classification-Genre\fma_metadata\features.csv
 
-C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\echonest.csv
+C:\Music-Classification-Genre\fma_metadata\echonest.csv
 
 Loading echonest.csv...
 Loaded echonest.csv
@@ -167,7 +167,7 @@ Audio data files (total size: 8000)
 ---------------------------------------------------------
 
 Song ID: 2
-Plotting spectrogram for song: C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_small\000\000002.mp3
+Plotting spectrogram for song: C:\Music-Classification-Genre\fma_small\000\000002.mp3
 Showing Mel Spectrogram for 000002.mp3
 .
 ----------------------------------------------------------------------
