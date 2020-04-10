@@ -7,7 +7,7 @@ from feature_extractor import feature_type
 from feature_extractor import echonest_feature_type
 from feature_extractor import statistic_type
 
-USE_ECHONEST_DATASET = True
+USE_ECHONEST_DATASET = False
 extractor = feature_extractor(USE_ECHONEST_DATASET)
 processor = audio_preprocessor()
 
