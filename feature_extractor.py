@@ -314,6 +314,10 @@ class feature_extractor:
             print("Invalid feature type")
             return None
 
+        if self.USE_ECHONEST_DATASET == False:
+            print('Not supported\n')
+            return None
+
         echonest_feat_type_str = self.echonest_feature_types_str[echonest_feat_type]
 
         ret = self.echonest_features.filter(regex=echonest_feat_type_str)
@@ -328,10 +332,6 @@ class feature_extractor:
         ''' stat_type - statistic type: max, min, median, etc. '''
         if (feat_type not in self.feature_types_str) or (stat_type not in self.statistic_types_str):
             print("Invalid feature or statistic type")
-            return None
-
-        if self.USE_ECHONEST_DATASET == False:
-            print('Not supported\n')
             return None
 
         feat_type_str = self.feature_types_str[feat_type]
