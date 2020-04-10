@@ -104,7 +104,6 @@ class feature_extractor:
         self.echonest_feature_types_str[echonest_feature_type.SPEECHINESS] = 'speechiness';
         self.echonest_feature_types_str[echonest_feature_type.TEMPO] = 'tempo';
         self.echonest_feature_types_str[echonest_feature_type.VALENCE] = 'valence';
-        self.echonest_feature_types_str_list = list(self.echonest_feature_types_str.values())
 
         self.statistic_types_str = {}
         self.statistic_types_str[statistic_type.KURTOSIS] = 'kurtosis';
