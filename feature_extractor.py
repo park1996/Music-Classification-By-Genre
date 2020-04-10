@@ -330,6 +330,10 @@ class feature_extractor:
             print("Invalid feature or statistic type")
             return None
 
+        if self.USE_ECHONEST_DATASET == False:
+            print('Not supported\n')
+            return None
+
         feat_type_str = self.feature_types_str[feat_type]
         stat_type_str = self.statistic_types_str[stat_type]
 
