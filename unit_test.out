@@ -1,0 +1,173 @@
+Finding the following metadata files:
+
+C:\Music-Classification-Genre\fma_metadata\tracks.csv
+
+C:\Music-Classification-Genre\fma_metadata\genres.csv
+
+C:\Music-Classification-Genre\fma_metadata\features.csv
+
+C:\Music-Classification-Genre\fma_metadata\echonest.csv
+
+Loading echonest.csv...
+Loaded echonest.csv
+
+Loading tracks.csv...
+Loaded tracks.csv
+
+Loading genres.csv...
+Loaded genres.csv
+
+Loading features.csv...
+Loaded features.csv
+
+Elapsed time: 19.30491018295288 seconds
+
+Found 8000 songs
+---------------------------------------------------------
+Genre List (totalsize: 8)
+---------------------------------------------------------
+
+['Electronic', 'Experimental', 'Folk', 'Hip-Hop', 'Instrumental', 'International', 'Pop', 'Rock']
+
+
+.---------------------------------------------------------
+Test dataset (totalsize: 189)
+---------------------------------------------------------
+
+Printing sample data...
+
+Song: #3624
+Title: Days of Summer
+Artist: Fallen Leaves
+Genre: Rock
+Median MFCC:
+[-135.8177, 158.96973, -37.658142, 35.0305, 4.584554, 22.049448, -10.6949415, 3.037063, -2.2255788, 1.142669, -3.0484707, 2.3550742, 4.5302696, 0.17825608, 4.1503215, -0.36905894, -4.152953, -3.7320282, -1.2379661, -6.124282]
+
+Median Chroma STFT:
+[0.3301872, 0.5319137, 0.45816317, 0.4401094, 0.5668745, 0.45470464, 0.4294926, 0.3785782, 0.4466584, 0.44248807, 0.32924014, 0.30637065]
+
+Median Spectral Contrast:
+[18.189388, 14.874949, 16.645708, 17.078693, 18.707245, 18.043236, 37.74031]
+
+Acousticness:
+[165.99]
+
+Danceability:
+[165.99]
+
+Energy:
+[165.99]
+
+Instrumentalness:
+[165.99]
+
+Liveness:
+[165.99]
+
+Speechiness:
+[165.99]
+
+Tempo:
+[165.99]
+
+Valence:
+[165.99]
+
+.---------------------------------------------------------
+Training dataset (total size: 987)
+---------------------------------------------------------
+
+Printing sample data...
+
+Song: #2
+Title: Food
+Artist: AWOL
+Genre: Hip-Hop
+Median MFCC:
+[-143.5943, 124.859314, -43.51863, 28.886786, -13.499909, 19.181675, -7.8341784, 11.582661, -3.6430218, 1.0851766, -2.2721145, -0.95225215, -6.490981, -3.2079442, 1.1092585, 0.027717194, 3.8598971, -1.6981039, 1.5099033e-14, -5.5893373]
+
+Median Chroma STFT:
+[0.8134518, 0.4109856, 0.28680226, 0.28363743, 0.26507235, 0.1847963, 0.22637892, 0.36596346, 0.3057928, 0.3116037, 0.36926937, 0.50939614]
+
+Median Spectral Contrast:
+[17.58058, 15.031244, 16.844053, 16.985653, 17.816685, 17.255152, 39.830345]
+
+Acousticness:
+[165.922]
+
+Danceability:
+[165.922]
+
+Energy:
+[165.922]
+
+Instrumentalness:
+[165.922]
+
+Liveness:
+[165.922]
+
+Speechiness:
+[165.922]
+
+Tempo:
+[165.922]
+
+Valence:
+[165.922]
+
+.---------------------------------------------------------
+Validation dataset (total size: 118)
+---------------------------------------------------------
+
+Printing sample data...
+
+Song: #602
+Title: Disappearing
+Artist: Dora Bleu
+Genre: Folk
+Median MFCC:
+[-351.18286, 167.74689, 47.084915, 8.242632, 10.015201, 12.2969475, 3.615212, -3.691759, -5.572503, -7.6262417, -9.526769, -9.008953, -8.2858925, -9.312259, -7.426891, -3.7911496, -2.2580128, -1.7519474, -2.0489595, -2.61158]
+
+Median Chroma STFT:
+[0.2066558, 0.33293748, 0.33806348, 0.3341451, 0.27666605, 0.28097963, 0.2809576, 0.211041, 0.31707165, 0.31518704, 0.21368979, 0.20024538]
+
+Median Spectral Contrast:
+[23.580547, 18.205967, 18.610525, 19.940966, 18.54072, 17.243114, 24.503115]
+
+Acousticness:
+[75.739]
+
+Danceability:
+[75.739]
+
+Energy:
+[75.739]
+
+Instrumentalness:
+[75.739]
+
+Liveness:
+[75.739]
+
+Speechiness:
+[75.739]
+
+Tempo:
+[75.739]
+
+Valence:
+[75.739]
+
+.---------------------------------------------------------
+Audio data files (total size: 8000)
+---------------------------------------------------------
+
+Song ID: 2
+Plotting spectrogram for song: C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_small\000\000002.mp3
+Showing Mel Spectrogram for 000002.mp3
+.
+----------------------------------------------------------------------
+Ran 5 tests in 4.530s
+
+OK
