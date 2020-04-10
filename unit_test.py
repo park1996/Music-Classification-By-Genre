@@ -7,7 +7,7 @@ from feature_extractor import feature_type
 from feature_extractor import echonest_feature_type
 from feature_extractor import statistic_type
 
-USE_ECHONEST_DATASET = False
+USE_ECHONEST_DATASET = True
 extractor = feature_extractor(USE_ECHONEST_DATASET)
 processor = audio_preprocessor()
 
@@ -54,7 +54,7 @@ class TestExtractor(unittest.TestCase):
         SAMPLE_SIZE = 1
 
         print('Printing sample data...\n')
-        print(len(extractor.get_all_song_ids()))
+
         # Get features
         for i in dataset[:SAMPLE_SIZE]:
             print('Song: #' + str(i))
