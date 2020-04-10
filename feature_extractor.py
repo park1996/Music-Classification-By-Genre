@@ -123,7 +123,7 @@ class feature_extractor:
 
         start_time = time.time()
 
-        # Load echonest metadata
+        # Load echonest metadata first
         if self.USE_ECHONEST_DATASET == True:
             self.__load_echonest_features()
 
