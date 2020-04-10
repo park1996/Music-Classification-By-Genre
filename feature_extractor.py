@@ -262,8 +262,6 @@ class feature_extractor:
 
         if self.ECHONEST in filename:
             echonest_feature_list = []
-            ECHONEST_FEATURE_COUNT = 8
-            ECHONEST_FEATURE_COLUMNS = list(range(0, ECHONEST_FEATURE_COUNT))
 
             for chunk in  pd.read_csv(filepath, header=[1, 2], index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
                 echonest_feature_list.append(chunk)

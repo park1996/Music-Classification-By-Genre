@@ -1,12 +1,12 @@
 Finding the following metadata files:
 
-C:\Music-Classification-Genre\fma_metadata\tracks.csv
+C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\tracks.csv
 
-C:\Music-Classification-Genre\fma_metadata\genres.csv
+C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\genres.csv
 
-C:\Music-Classification-Genre\fma_metadata\features.csv
+C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\features.csv
 
-C:\Music-Classification-Genre\fma_metadata\echonest.csv
+C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML project\Music-Classification-Genre\fma_metadata\echonest.csv
 
 Loading echonest.csv...
 Loaded echonest.csv
@@ -20,7 +20,7 @@ Loaded genres.csv
 Loading features.csv...
 Loaded features.csv
 
-Elapsed time: 19.30491018295288 seconds
+Elapsed time: 19.197889804840088 seconds
 
 Found 8000 songs
 ---------------------------------------------------------
@@ -36,6 +36,7 @@ Test dataset (totalsize: 189)
 
 Printing sample data...
 
+1294
 Song: #3624
 Title: Days of Summer
 Artist: Fallen Leaves
@@ -50,28 +51,28 @@ Median Spectral Contrast:
 [18.189388, 14.874949, 16.645708, 17.078693, 18.707245, 18.043236, 37.74031]
 
 Acousticness:
-[165.99]
+[0.8592553]
 
 Danceability:
-[165.99]
+[0.32532427]
 
 Energy:
-[165.99]
+[0.5858995]
 
 Instrumentalness:
-[165.99]
+[0.86374545]
 
 Liveness:
-[165.99]
+[0.050182734]
 
 Speechiness:
-[165.99]
+[0.035414275]
 
 Tempo:
 [165.99]
 
 Valence:
-[165.99]
+[0.5425197]
 
 .---------------------------------------------------------
 Training dataset (total size: 987)
@@ -79,6 +80,7 @@ Training dataset (total size: 987)
 
 Printing sample data...
 
+1294
 Song: #2
 Title: Food
 Artist: AWOL
@@ -93,28 +95,28 @@ Median Spectral Contrast:
 [17.58058, 15.031244, 16.844053, 16.985653, 17.816685, 17.255152, 39.830345]
 
 Acousticness:
-[165.922]
+[0.41667524]
 
 Danceability:
-[165.922]
+[0.67589396]
 
 Energy:
-[165.922]
+[0.63447624]
 
 Instrumentalness:
-[165.922]
+[0.010628068]
 
 Liveness:
-[165.922]
+[0.17764658]
 
 Speechiness:
-[165.922]
+[0.15931006]
 
 Tempo:
 [165.922]
 
 Valence:
-[165.922]
+[0.576661]
 
 .---------------------------------------------------------
 Validation dataset (total size: 118)
@@ -122,6 +124,7 @@ Validation dataset (total size: 118)
 
 Printing sample data...
 
+1294
 Song: #602
 Title: Disappearing
 Artist: Dora Bleu
@@ -136,28 +139,28 @@ Median Spectral Contrast:
 [23.580547, 18.205967, 18.610525, 19.940966, 18.54072, 17.243114, 24.503115]
 
 Acousticness:
-[75.739]
+[0.98743266]
 
 Danceability:
-[75.739]
+[0.32088947]
 
 Energy:
-[75.739]
+[0.057405878]
 
 Instrumentalness:
-[75.739]
+[0.785892]
 
 Liveness:
-[75.739]
+[0.09207883]
 
 Speechiness:
-[75.739]
+[0.040145922]
 
 Tempo:
 [75.739]
 
 Valence:
-[75.739]
+[0.060071733]
 
 .---------------------------------------------------------
 Audio data files (total size: 8000)
@@ -168,6 +171,6 @@ Plotting spectrogram for song: C:\Users\BNurhusien.SIERRAWIRELESS\Desktop\ML pro
 Showing Mel Spectrogram for 000002.mp3
 .
 ----------------------------------------------------------------------
-Ran 5 tests in 4.530s
+Ran 5 tests in 4.177s
 
 OK
