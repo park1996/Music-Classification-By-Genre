@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from k_means import k_means
 from sklearn.cluster import KMeans
+from sklearn.cluster import MiniBatchKMeans
 from sklearn.preprocessing import StandardScaler
 
 import os
@@ -16,6 +17,7 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 ECHO_DIR = os.path.join(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)),'fma_metadata\echonest.csv')
 
 import feature_extractor as feature_extractor
+
 
 def read_echonest_data():
     df = pd.read_csv(ECHO_DIR, sep=',', header=None, low_memory=False)
@@ -57,10 +59,6 @@ def get_features(fe, ids):
     features = fe.get_features_as_nparray(ids)
     print('Processing features elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
     return features
- 
-def normalized_features(features):
-    norm_features = (features - features.min(axis=0)) / (features.max(axis=0) - features.min(axis=0))
-    return norm_features
 
 feature_types, df = read_echonest_data()
 echonest_ids = df.index.to_numpy().astype(int)
@@ -69,25 +67,27 @@ fe = feature_extractor.feature_extractor()
 
 scaler = StandardScaler()
 
-# train_ids = np.intersect1d(train_ids, echonest_ids)
-# train_features = get_echonest_features(df, train_ids)
-# train_features = scaler.fit_transform(train_features)
-# train_genres = get_genres(fe, train_ids)
+train_ids = np.asarray(fe.get_training_dataset_song_ids())
+
+train_ids = np.intersect1d(train_ids, echonest_ids)
+train_features = get_echonest_features(df, train_ids)
+train_features = scaler.fit_transform(train_features)
+train_genres = get_genres(fe, train_ids)
 
 # validation_ids = np.asarray(fe.get_validation_dataset_song_ids())
 # validation_ids = np.intersect1d(validation_ids, echonest_ids)
 # validation_features = get_echonest_features(df, validation_ids)
 # validation_genres = get_genres(fe, validation_ids)
 
-train_ids = np.asarray(fe.get_training_dataset_song_ids())
-train_features, train_genres = read_data(fe, train_ids)
-train_features = scaler.fit_transform(train_features)
+# train_ids = np.asarray(fe.get_training_dataset_song_ids())
+# train_features, train_genres = read_data(fe, train_ids)
+# train_features = scaler.fit_transform(train_features)
 
-validation_ids = np.asarray(fe.get_validation_dataset_song_ids())
-validation_features, validation_genres = read_data(fe, validation_ids)
+# validation_ids = np.asarray(fe.get_validation_dataset_song_ids())
+# validation_features, validation_genres = read_data(fe, validation_ids)
 
-test_ids = np.asarray(fe.get_test_dataset_song_ids())
-test_features, test_genres = read_data(fe, test_ids)
+# test_ids = np.asarray(fe.get_test_dataset_song_ids())
+# test_features, test_genres = read_data(fe, test_ids)
 
 
 number_of_clusters = get_number_of_clusters(fe)
@@ -99,8 +99,10 @@ print(all_genre_names)
 
 start_time = time.time()
 train_centers = km.initialize_centers(train_features, train_genres, all_genre_names)
+
 # , n_init=2000
 km_model = KMeans(init=train_centers, n_clusters=number_of_clusters, random_state=10).fit(train_features)
+# km_model = MiniBatchKMeans(init=train_centers, n_clusters=number_of_clusters, random_state=0, batch_size=10, max_iter=500, reassignment_ratio=0.1, tol=0.000001).fit(train_features)
 train_clusters = km_model.labels_
 train_its = km_model.n_iter_
 print('Number of iteration: ' + str(train_its))
