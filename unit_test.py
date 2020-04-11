@@ -4,9 +4,11 @@ import unittest
 from audio_preprocessor import audio_preprocessor
 from feature_extractor import feature_extractor
 from feature_extractor import feature_type
+from feature_extractor import echonest_feature_type
 from feature_extractor import statistic_type
 
-extractor = feature_extractor()
+USE_ECHONEST_DATASET = False
+extractor = feature_extractor(USE_ECHONEST_DATASET)
 processor = audio_preprocessor()
 
 class TestExtractor(unittest.TestCase):
@@ -20,7 +22,7 @@ class TestExtractor(unittest.TestCase):
         print('---------------------------------------------------------')
         print('Training dataset (total size: ' + str(len(training_set_song_ids)) + ')')
         print('---------------------------------------------------------\n')
-        TestExtractor.print_dataset_info(training_set_song_ids)
+        TestExtractor.print_dataset_info(training_set_song_ids, True)
 
     def test_get_validation_dataset_info(self):
         ''' Get validation dataset '''
@@ -47,12 +49,13 @@ class TestExtractor(unittest.TestCase):
         print(genre_list)
         print('\n')
 
-    def print_dataset_info(dataset):
+    def print_dataset_info(dataset, training_data=False):
         ''' Print dataset info'''
         SAMPLE_SIZE = 1
 
         print('Printing sample data...\n')
 
+        # Get features
         for i in dataset[:SAMPLE_SIZE]:
             print('Song: #' + str(i))
             print('Title: ' + str(extractor.get_title(i)))
@@ -61,6 +64,11 @@ class TestExtractor(unittest.TestCase):
             print('Median MFCC:\n' + str(extractor.get_feature(i, feature_type.MFCC, statistic_type.MEDIAN)) + '\n')
             print('Median Chroma STFT:\n' + str(extractor.get_feature(i, feature_type.CHROMA_STFT, statistic_type.MEDIAN)) + '\n')
             print('Median Spectral Contrast:\n' + str(extractor.get_feature(i, feature_type.SPEC_CONTRAST, statistic_type.MEDIAN)) + '\n')
+
+            # Get echonest features
+            if USE_ECHONEST_DATASET == True:
+                for ef in echonest_feature_type:
+                    print(extractor.echonest_feature_types_str[ef].title() + ':\n' + str(extractor.get_echonest_feature(i, ef)) + '\n')
 
 class TestProcessor(unittest.TestCase):
     ''' Test audio preprocessor class '''

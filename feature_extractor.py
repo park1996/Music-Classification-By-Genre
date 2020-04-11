@@ -17,6 +17,16 @@ class feature_type(Enum):
     SPEC_ROLLOFF = 7
     RMS_ENERGY = 8
     ZERO_CROSSING_RATE = 9
+
+class echonest_feature_type(Enum):
+    ACOUSTICNESS = 1
+    DACNEABILITY = 2
+    ENERGY = 3
+    INSTRUMENTALNESS = 4
+    LIVENESS = 5
+    SPEECHINESS = 6
+    TEMPO = 7
+    VALENCE = 8
     
 class statistic_type(Enum):
     KURTOSIS = 1
@@ -30,7 +40,7 @@ class statistic_type(Enum):
 class feature_extractor:
     ''' Extracts features from metadata folder '''
 
-    def __init__(self):
+    def __init__(self, use_echonest_dataset=False):
         ''' Constructor for this class '''
 
         # Metadata csv files
@@ -38,13 +48,18 @@ class feature_extractor:
         self.TRACKS_FILE = os.path.join(self.META_DATA_DIR, 'tracks.csv')
         self.GENRE_FILE = os.path.join(self.META_DATA_DIR, 'genres.csv')
         self.FEATURES_FILE = os.path.join(self.META_DATA_DIR, 'features.csv')
+        self.ECHONEST_FILE = os.path.join(self.META_DATA_DIR, 'echonest.csv')
+        self.USE_ECHONEST_DATASET = use_echonest_dataset
 
         print('Finding the following metadata files:\n')
         print(self.TRACKS_FILE + '\n')
         print(self.GENRE_FILE + '\n')
         print(self.FEATURES_FILE + '\n')
 
-        # DataFrame keys
+        if self.USE_ECHONEST_DATASET == True:
+            print(self.ECHONEST_FILE + '\n')
+
+        # Important dataframe keys and strings
         self.TRACK = 'track'
         self.TITLE = 'title'
         self.GENRE = 'genre'
@@ -63,9 +78,11 @@ class feature_extractor:
         self.GENRES_TOP = 'genre_top'
         self.GENRE_ID = 'genre_id'
         self.TRACKS = 'tracks'
+        self.ECHONEST = 'echonest'
         self.TOP_LEVEL = 'top_level'
         self.RAW = 'raw'
         self.STATISTICS = 'statistics'
+        self.AUDIO_FEATURES = 'audio_features'
 
         self.feature_types_str = {}
         self.feature_types_str[feature_type.CHROMA_STFT] = 'chroma_stft';
@@ -77,6 +94,16 @@ class feature_extractor:
         self.feature_types_str[feature_type.SPEC_ROLLOFF] = 'spectral_rolloff';
         self.feature_types_str[feature_type.TONNETZ] = 'tonnetz';
         self.feature_types_str[feature_type.ZERO_CROSSING_RATE] = 'zcr';
+
+        self.echonest_feature_types_str = {}
+        self.echonest_feature_types_str[echonest_feature_type.ACOUSTICNESS] = 'acousticness';
+        self.echonest_feature_types_str[echonest_feature_type.DACNEABILITY] = 'danceability';
+        self.echonest_feature_types_str[echonest_feature_type.ENERGY] = 'energy';
+        self.echonest_feature_types_str[echonest_feature_type.INSTRUMENTALNESS] = 'instrumentalness';
+        self.echonest_feature_types_str[echonest_feature_type.LIVENESS] = 'liveness';
+        self.echonest_feature_types_str[echonest_feature_type.SPEECHINESS] = 'speechiness';
+        self.echonest_feature_types_str[echonest_feature_type.TEMPO] = 'tempo';
+        self.echonest_feature_types_str[echonest_feature_type.VALENCE] = 'valence';
 
         self.statistic_types_str = {}
         self.statistic_types_str[statistic_type.KURTOSIS] = 'kurtosis';
@@ -95,6 +122,10 @@ class feature_extractor:
 
         start_time = time.time()
 
+        # Load echonest metadata first
+        if self.USE_ECHONEST_DATASET == True:
+            self.__load_echonest_features()
+
         self.__load_tracks()
 
         self.__load_genres()
@@ -104,14 +135,19 @@ class feature_extractor:
 
         print ('Elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
 
-
     def __load_tracks(self):
         '''  Load tracks metadata '''
         # Load tracks metadata
         self.tracks = self.__load(self.TRACKS_FILE)
 
+        # Use echonest dataset if required
+        if self.USE_ECHONEST_DATASET == True:
+            self.dataset = self.tracks.loc[self.tracks.index.intersection([int(i) for i in self.echonest_features.index.tolist()])]
+            self.dataset = self.dataset[self.dataset[self.SET, self.SUBSET] == self.SMALL]
+        else:
+            self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
+
         # Get training, validation, and test datasets
-        self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
         self.training_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TRAINING]
         self.validation_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.VALIDATION]
         self.test_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TEST]
@@ -136,6 +172,11 @@ class feature_extractor:
     def __load_features(self):
         '''  Load features metadata '''
         self.features = self.__load(self.FEATURES_FILE)
+
+    def __load_echonest_features(self):
+        '''  Load echonest metadata '''
+        # Load echonest metadata
+        self.echonest_features = self.__load(self.ECHONEST_FILE)
 
     def __load(self, filepath):
         ''' The following method was taken from the FMA repository and heavily modified.'''
@@ -218,6 +259,19 @@ class feature_extractor:
 
             return tracks
 
+        if self.ECHONEST in filename:
+            echonest_feature_list = []
+
+            for chunk in  pd.read_csv(filepath, header=[1, 2], index_col=0, chunksize=CHUNK_SIZE, low_memory=False):
+                echonest_feature_list.append(chunk)
+
+            print ('Loaded ' + filename  + '\n')
+            echonest_features = pd.concat(echonest_feature_list,sort=False)
+            echonest_features = echonest_features[self.AUDIO_FEATURES]
+            echonest_features.index = echonest_features.index.map(str)
+
+            return echonest_features
+
     def get_all_song_ids(self):
         ''' Get all song ids '''
         return self.list_of_all_song_ids
@@ -249,11 +303,34 @@ class feature_extractor:
         ''' track_id - unique ID of the song in dataset '''
         return self.tracks.loc[track_id, self.ARTIST][self.NAME]
 
+    def get_echonest_feature(self, track_id, echonest_feat_type):
+        ''' Return feature '''
+        ''' track_id - unique ID of the song in dataset '''
+        ''' echonest_feat_type - echonest feature type: acousticness, energy, danceability, etc. '''
+        if echonest_feat_type not in self.echonest_feature_types_str:
+            print("Invalid feature type")
+            return None
+
+        if self.USE_ECHONEST_DATASET == False:
+            print('Not supported\n')
+            return None
+
+        echonest_feat_type_str = self.echonest_feature_types_str[echonest_feat_type]
+
+        ret = self.echonest_features.filter(regex=echonest_feat_type_str)
+        ret = ret.loc[str(track_id)]
+        ret_list = list(map(np.float32, ret.to_list()))
+        return ret_list
+
     def get_feature(self, track_id, feat_type, stat_type):
         ''' Return feature '''
         ''' track_id - unique ID of the song in dataset '''
         ''' feat_type - feature type: Chroma, Tonnetz, MFCC, etc. '''
         ''' stat_type - statistic type: max, min, median, etc. '''
+        if (feat_type not in self.feature_types_str) or (stat_type not in self.statistic_types_str):
+            print("Invalid feature or statistic type")
+            return None
+
         feat_type_str = self.feature_types_str[feat_type]
         stat_type_str = self.statistic_types_str[stat_type]
 
