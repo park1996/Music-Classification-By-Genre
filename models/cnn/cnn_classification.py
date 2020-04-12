@@ -13,6 +13,7 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from audio_preprocessor import audio_preprocessor as ap
 from feature_extractor import feature_extractor as fe
+from feature_extractor import feature_type as ft
 
 if __name__ == '__main__':
 

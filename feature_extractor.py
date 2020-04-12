@@ -27,7 +27,7 @@ class echonest_feature_type(Enum):
     SPEECHINESS = 6
     TEMPO = 7
     VALENCE = 8
-    
+
 class statistic_type(Enum):
     KURTOSIS = 1
     MAX = 2
@@ -35,7 +35,7 @@ class statistic_type(Enum):
     MEDIAN = 4
     MIN = 5
     SKEW = 6
-    STD = 7  
+    STD = 7
 
 class feature_extractor:
     ''' Extracts features from metadata folder '''
@@ -338,7 +338,7 @@ class feature_extractor:
         ret = ret.loc[str(track_id), ret.loc[self.STATISTICS] == stat_type_str]
         ret_list = list(map(np.float32, ret.to_list()))
         return ret_list
-    
+
     def get_features_as_nparray(self, track_ids):
         '''Return feature dataframe as numpy array'''
         statistic_types = self.statistic_types_str.values()
