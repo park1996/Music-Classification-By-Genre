@@ -4,6 +4,7 @@ from k_means import k_means
 from sklearn.cluster import KMeans
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
 
 import os
 import ntpath
@@ -18,6 +19,20 @@ ECHO_DIR = os.path.join(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT
 
 import feature_extractor as feature_extractor
 
+FEATURE_TYPES = [feature_extractor.feature_type.MFCC,
+                 feature_extractor.feature_type.SPEC_CENTROID,
+                 feature_extractor.feature_type.TONNETZ]
+               
+STATISTIC_TYPES = [feature_extractor.statistic_type.MEAN, feature_extractor.statistic_type.STD]
+
+ECHONEST_FEATURE_TYPES = [feature_extractor.echonest_feature_type.ACOUSTICNESS,
+                        feature_extractor.echonest_feature_type.DACNEABILITY,
+                        feature_extractor.echonest_feature_type.ENERGY,
+                        feature_extractor.echonest_feature_type.INSTRUMENTALNESS,
+                        feature_extractor.echonest_feature_type.LIVENESS,
+                        feature_extractor.echonest_feature_type.SPEECHINESS,
+                        feature_extractor.echonest_feature_type.TEMPO,
+                        feature_extractor.echonest_feature_type.VALENCE]
 
 def read_echonest_data():
     df = pd.read_csv(ECHO_DIR, sep=',', header=None, low_memory=False)
@@ -27,9 +42,11 @@ def read_echonest_data():
     return echonest_types, echonest_data
 
 def get_echonest_features(df, ids):
-    return df.loc[(map(str, ids))].apply(np.float32).to_numpy()
-   
-
+    print("Constructing feature matrix...")
+    start_time = time.time()
+    features = fe.get_echonest_features_as_nparray(ids, ECHONEST_FEATURE_TYPES)
+    print('Processing features elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
+    return features
     
 def read_data(fe, song_ids):
     song_genres = get_genres(fe, song_ids)
@@ -49,14 +66,7 @@ def get_number_of_clusters(fe):
 def get_features(fe, ids):
     print("Constructing feature matrix...")
     start_time = time.time()
-    # features = []
-    # for i in ids:
-    #     i_features = []
-    #     for feat_type in feature_extractor.feature_type:
-    #         for stat_type in feature_extractor.statistic_type:
-    #             i_features.extend(fe.get_feature(i, feat_type, stat_type))
-    #     features.append(i_features)
-    features = fe.get_features_as_nparray(ids)
+    features = fe.get_features_as_nparray(ids, FEATURE_TYPES, STATISTIC_TYPES)
     print('Processing features elapsed time: ' + str(time.time() - start_time) + ' seconds\n')
     return features
 
@@ -69,19 +79,19 @@ scaler = StandardScaler()
 
 train_ids = np.asarray(fe.get_training_dataset_song_ids())
 
-train_ids = np.intersect1d(train_ids, echonest_ids)
-train_features = get_echonest_features(df, train_ids)
-train_features = scaler.fit_transform(train_features)
-train_genres = get_genres(fe, train_ids)
+# train_ids = np.intersect1d(train_ids, echonest_ids)
+# train_features = get_echonest_features(df, train_ids)
+# train_features = scaler.fit_transform(train_features)
+# train_genres = get_genres(fe, train_ids)
 
 # validation_ids = np.asarray(fe.get_validation_dataset_song_ids())
 # validation_ids = np.intersect1d(validation_ids, echonest_ids)
 # validation_features = get_echonest_features(df, validation_ids)
 # validation_genres = get_genres(fe, validation_ids)
 
-# train_ids = np.asarray(fe.get_training_dataset_song_ids())
-# train_features, train_genres = read_data(fe, train_ids)
-# train_features = scaler.fit_transform(train_features)
+train_features, train_genres = read_data(fe, train_ids)
+train_features = scaler.fit_transform(train_features)
+train_features = PCA(n_components=4).fit_transform(train_features)
 
 # validation_ids = np.asarray(fe.get_validation_dataset_song_ids())
 # validation_features, validation_genres = read_data(fe, validation_ids)
@@ -101,7 +111,7 @@ start_time = time.time()
 train_centers = km.initialize_centers(train_features, train_genres, all_genre_names)
 
 # , n_init=2000
-km_model = KMeans(init=train_centers, n_clusters=number_of_clusters, random_state=10).fit(train_features)
+km_model = KMeans(init=train_centers, n_clusters=number_of_clusters, tol=0.00000001).fit(train_features)
 # km_model = MiniBatchKMeans(init=train_centers, n_clusters=number_of_clusters, random_state=0, batch_size=10, max_iter=500, reassignment_ratio=0.1, tol=0.000001).fit(train_features)
 train_clusters = km_model.labels_
 train_its = km_model.n_iter_
@@ -116,6 +126,8 @@ predicted_train_genres = km.label_clusters(train_clusters, all_genre_names, len(
 
 accuracy_rate = km.accuracy_rate(predicted_train_genres, train_genres)
 print('Accuracy rate: ' + str(accuracy_rate))
+
+print(train_features[0].shape)
 
 plot_title = 'Plot of Predicted Clusters'
 km.display_clusters(train_features, predicted_train_genres, all_genre_names, 0, 1, plot_title)
