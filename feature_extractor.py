@@ -339,7 +339,7 @@ class feature_extractor:
         ret_list = list(map(np.float32, ret.to_list()))
         return ret_list
     
-    def get_features_as_nparray(self, track_ids):
+    def get_all_features_as_nparray(self, track_ids):
         '''Return feature dataframe as numpy array'''
         statistic_types = self.statistic_types_str.values()
         feature_types = self.feature_types_str.values()
@@ -347,6 +347,37 @@ class feature_extractor:
         ret = self.features.filter(regex=feature_types_regex)
         ret = ret.loc[list(map(str, track_ids)), ret.loc[self.STATISTICS].isin(statistic_types)]
         return ret.apply(np.float32).to_numpy()
+    
+    def get_features_as_nparray(self, track_ids, feature_types, statistic_types):
+        feature_vals = []
+        statistic_vals = []
+        for feature_type in feature_types:
+            feature_vals.append(self.feature_types_str[feature_type])
+        for statistic_type in statistic_types:
+            statistic_vals.append(self.statistic_types_str[statistic_type])
+        feature_types_regex = '|'.join(feature_vals)
+        ret = self.features.filter(regex=feature_types_regex)
+        ret = ret.loc[list(map(str, track_ids)), ret.loc[self.STATISTICS].isin(statistic_vals)]
+        return ret.apply(np.float32).to_numpy()
+
+    def get_all_echonest_features_as_nparray(self, track_ids):
+        '''Return feature dataframe as numpy array'''
+        echonest_feature_types = self.echonest_feature_types_str.values()
+        echonest_feature_types_regex = '|'.join(echonest_feature_types)
+        ret = self.echonest_features.filter(regex=echonest_feature_types_regex)
+        ret = ret.loc[list(map(str, track_ids))]
+        return ret.apply(np.float32).to_numpy()
+    
+    def get_echonest_features_as_nparray(self, track_ids, echonest_feature_types):
+        echonest_feature_vals = []
+        for echonest_feature_type in echonest_feature_types:
+            echonest_feature_vals.append(self.echonest_feature_types_str[echonest_feature_type])
+        feature_types_regex = '|'.join(echonest_feature_vals)
+        ret = self.echonest_features.filter(regex=feature_types_regex)
+        ret = ret.loc[list(map(str, track_ids))]
+        return ret.apply(np.float32).to_numpy()
+
+
 
     def get_all_genres(self):
         ''' Return all genre types '''
