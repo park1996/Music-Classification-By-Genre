@@ -1,6 +1,7 @@
 from keras.models import Sequential
 from keras.models import load_model
 from keras.layers import Dense, Conv2D, Dropout, Flatten, MaxPooling2D
+from keras.regularizers import l2
 import tensorflow as tf
 
 class cnn:
@@ -9,12 +10,12 @@ class cnn:
         #https://engmrk.com/module-22-implementation-of-cnn-using-keras/?utm_campaign=News&utm_medium=Community&utm_source=DataCamp.com
         #https://levelup.gitconnected.com/audio-data-analysis-using-deep-learning-with-python-part-2-4a1f40d3708d
         self.MODEL = Sequential()
-        self.MODEL.add(Conv2D(32, kernel_size=(2,2), input_shape=input_shape))
+        self.MODEL.add(Conv2D(32, kernel_size=(2,2), input_shape=input_shape, activation='relu', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
         self.MODEL.add(MaxPooling2D(pool_size=(2, 2)))
-        self.MODEL.add(Conv2D(64, kernel_size=(2,2), activation='relu'))
+        self.MODEL.add(Conv2D(64, kernel_size=(2,2), activation='relu', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
         self.MODEL.add(MaxPooling2D(pool_size=(2, 2)))
-        self.MODEL.add(Conv2D(64, kernel_size=(2,2), activation='relu'))
-        self.MODEL.add(Conv2D(64, kernel_size=(1,1), activation='relu'))
+        self.MODEL.add(Conv2D(64, kernel_size=(2,2), activation='relu', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
+        self.MODEL.add(Conv2D(64, kernel_size=(1,1), activation='relu', kernel_regularizer=l2(0.01), bias_regularizer=l2(0.01)))
         self.MODEL.add(Flatten()) # Flattening the 2D arrays for fully connected layers
         self.MODEL.add(Dense(1024, activation=tf.nn.relu))
         self.MODEL.add(Dropout(0.2))

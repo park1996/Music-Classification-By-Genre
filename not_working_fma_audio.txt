@@ -1,3 +1,9 @@
 #This document notes the audios in FMA data set that should be exluded when training the model
 001486.mp3
 133297.mp3
+108925.mp3
+099134.mp3
+098569.mp3
+098567.mp3
+098565.mp3
+072059.mp3
