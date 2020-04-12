@@ -36,7 +36,6 @@ Test dataset (totalsize: 189)
 
 Printing sample data...
 
-1294
 Song: #3624
 Title: Days of Summer
 Artist: Fallen Leaves
@@ -80,7 +79,6 @@ Training dataset (total size: 987)
 
 Printing sample data...
 
-1294
 Song: #2
 Title: Food
 Artist: AWOL
@@ -124,7 +122,6 @@ Validation dataset (total size: 118)
 
 Printing sample data...
 
-1294
 Song: #602
 Title: Disappearing
 Artist: Dora Bleu
