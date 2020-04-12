@@ -2,7 +2,7 @@ import os
 import ntpath
 import sys
 import csv
-from cnn import cnn
+from cnn_for_feature import cnn
 import numpy as np
 import random
 from datetime import datetime
