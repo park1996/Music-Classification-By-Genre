@@ -6,6 +6,7 @@ from cnn_for_feature import cnn
 import numpy as np
 import random
 from datetime import datetime
+from sklearn import preprocessing
 
 PACKAGE_PARENT = '../..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -78,9 +79,12 @@ if __name__ == '__main__':
     num_rows = int(len(trainDataLst[0])/reduceFactor)
     num_columns = reduceFactor
     num_channels = 1
+    scaler=preprocessing.StandardScaler().fit(trainDataLst)
+    trainDataLst = scaler.transform(trainDataLst)
     trainData = trainDataLst.reshape(trainDataLst.shape[0], num_rows, num_columns, num_channels)
     trainClass = np.array(trainClassLst)
 
+    testDataLst = scaler.transform(testDataLst)
     testData = testDataLst.reshape(testDataLst.shape[0], num_rows, num_columns, num_channels)
     testClass = np.array(testClassLst)
 

@@ -22,7 +22,7 @@ class cnn:
         self.MODEL.add(Dense(10,activation=tf.nn.softmax))
         self.MODEL.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
     def train(self, features, target_labels):
-        self.MODEL.fit(x=features, y=target_labels, epochs=50)
+        self.MODEL.fit(x=features, y=target_labels, epochs=15)
     def test(self, features, target_labels):
         (eval_loss, eval_accuracy) = self.MODEL.evaluate(x=features, y=target_labels)
         return (eval_loss, eval_accuracy)
