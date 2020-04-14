@@ -27,7 +27,7 @@ class echonest_feature_type(Enum):
     SPEECHINESS = 6
     TEMPO = 7
     VALENCE = 8
-    
+
 class statistic_type(Enum):
     KURTOSIS = 1
     MAX = 2
@@ -35,7 +35,7 @@ class statistic_type(Enum):
     MEDIAN = 4
     MIN = 5
     SKEW = 6
-    STD = 7  
+    STD = 7
 
 class feature_extractor:
     ''' Extracts features from metadata folder '''
@@ -376,8 +376,6 @@ class feature_extractor:
         ret = self.echonest_features.filter(regex=feature_types_regex)
         ret = ret.loc[list(map(str, track_ids))]
         return ret.apply(np.float32).to_numpy()
-
-
 
     def get_all_genres(self):
         ''' Return all genre types '''

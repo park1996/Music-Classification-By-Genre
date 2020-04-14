@@ -1,10 +1,12 @@
 import feature_extractor as FE
 from sklearn import svm as SVM_MODEL
+from sklearn import preprocessing
 from sklearn.metrics import accuracy_score
+from sklearn.decomposition import PCA
 import time
 
 class svm:
-    def __init__(self):
+    def __init__(self, use_echonest_dataset=False):
 
         start_time = time.time()
         
@@ -33,7 +35,7 @@ class svm:
         self.ALL_VA_ACC = []
         
         ''' use feature_extractor to grab data '''
-        self.DATA = FE.feature_extractor()
+        self.DATA = FE.feature_extractor(use_echonest_dataset)
 
         ''' initialize track ids for each set '''
         self.TR_IDS= self.DATA.get_training_dataset_song_ids()
@@ -43,39 +45,107 @@ class svm:
         print ('Elapsed time to initialize: ' + str(time.time() - start_time) + ' seconds\n')
         return
 
-    def prepare_data(self, stat=FE.statistic_type.KURTOSIS):
-        ''' Fills sets X and T for training, validation and test data '''
+    def prepare_features(self, stat=FE.statistic_type, feat=FE.feature_type):
+        ''' Fills sets X and T for training, validation and test data; for features '''
         
         print('Preparing training data...')
         start_time = time.time()
-        self.get_features_and_genres(self.TR_IDS, stat, self.TR_X, self.TR_T)
+        self.get_features_and_genres(self.TR_IDS, stat, feat, self.TR_X, self.TR_T)
         print ('Elapsed time to get training data: ' + str(time.time() - start_time) + ' seconds\n')
         
         print('Preparing validation data...')
         start_time = time.time()
-        self.get_features_and_genres(self.VA_IDS, stat, self.VA_X, self.VA_T)
+        self.get_features_and_genres(self.VA_IDS, stat, feat, self.VA_X, self.VA_T)
         print ('Elapsed time to get validation data: ' + str(time.time() - start_time) + ' seconds\n')
         
         print('Preparing test data...')
         start_time = time.time()
-        self.get_features_and_genres(self.TE_IDS, stat, self.TE_X, self.TE_T)
+        self.get_features_and_genres(self.TE_IDS, stat, feat, self.TE_X, self.TE_T)
         print ('Elapsed time to get test data: ' + str(time.time() - start_time) + ' seconds\n')
 
         return
 
-    def get_features_and_genres(self, ids, stat, X, T):
+    def get_features_and_genres(self, ids, stat_list, feature_list, X, T):
         ''' Gets features data and genre for set based on stat '''
         for i in ids:
             x = []
-            for j in FE.feature_type:
-                features = self.DATA.get_feature(i,j,stat)
-                for k in features:
-                    x.append(k)
+            for j in feature_list:
+                for k in stat_list:
+                    features = self.DATA.get_feature(i,j,k)
+                    for m in features:
+                        x.append(m)
             X.append(x)
             T.append(self.DATA.get_genre(i))
         return
 
-    def train_and_validate(self, k, d=3, g='scale'):
+    def prepare_echonest_features(self, feat=FE.echonest_feature_type):
+        ''' Fills sets X and T for training, validation and test data; for echonest features '''
+        
+        print('Preparing training data...')
+        start_time = time.time()
+        self.get_echonest_features_and_genres(self.TR_IDS, feat, self.TR_X, self.TR_T)
+        print ('Elapsed time to get training data: ' + str(time.time() - start_time) + ' seconds\n')
+        
+        print('Preparing validation data...')
+        start_time = time.time()
+        self.get_echonest_features_and_genres(self.VA_IDS, feat, self.VA_X, self.VA_T)
+        print ('Elapsed time to get validation data: ' + str(time.time() - start_time) + ' seconds\n')
+        
+        print('Preparing test data...')
+        start_time = time.time()
+        self.get_echonest_features_and_genres(self.TE_IDS, feat, self.TE_X, self.TE_T)
+        print ('Elapsed time to get test data: ' + str(time.time() - start_time) + ' seconds\n')
+
+        return
+
+    def get_echonest_features_and_genres(self, ids, feature_list, X, T):
+        ''' Gets features data and genre for set based on stat '''
+        for i in ids:
+            x = []
+            for j in feature_list:
+                feature= self.DATA.get_echonest_feature(i,j)
+                x.append(feature[0])
+            X.append(x)
+            T.append(self.DATA.get_genre(i))
+        return
+
+    def scale_features(self):
+        ''' scale features for better performances '''
+
+        if len(self.TR_X) == 0 or len(self.TR_T) == 0 or len(self.VA_X) == 0 or len(self.VA_T) == 0:
+            print('Call prepare_data(...) first. Cancelling method.')
+            return
+
+        print('Scaling features...')
+        start_time = time.time()
+        scaler = preprocessing.StandardScaler().fit(self.TR_X)
+        
+        self.TR_X = scaler.transform(self.TR_X)
+        self.VA_X = scaler.transform(self.VA_X)
+        self.TE_X = scaler.transform(self.TE_X)
+
+        print ('Elapsed time to scale features: ' + str(time.time() - start_time) + ' seconds\n')
+        return
+
+    def apply_pca(self, N=2):
+        ''' applies PCA to features '''
+
+        if len(self.TR_X) == 0 or len(self.TR_T) == 0 or len(self.VA_X) == 0 or len(self.VA_T) == 0:
+            print('Call prepare_data(...) first. Cancelling method.')
+            return
+
+        print('Apply PCA...')
+        start_time = time.time()
+        pca = PCA(n_components=N)
+
+        self.TR_X = pca.fit_transform(self.TR_X)
+        self.VA_X = pca.transform(self.VA_X)
+        self.TE_X = pca.transform(self.TE_X)
+
+        print ('Elapsed time to apply PCA: ' + str(time.time() - start_time) + ' seconds\n')        
+        return
+
+    def train_and_validate(self, k='rbf', c=1.0, d=3, g='scale', co=0.0, max_i=-1):
         ''' Trains SVM model and then validates model '''
         
         if len(self.TR_X) == 0 or len(self.TR_T) == 0 or len(self.VA_X) == 0 or len(self.VA_T) == 0:
@@ -85,7 +155,7 @@ class svm:
         print('Training now...')
         start_time = time.time()
         curr_acc = 0
-        curr_model = SVM_MODEL.SVC(kernel=k, degree=d, gamma=g)
+        curr_model = SVM_MODEL.SVC(C=c, kernel=k, degree=d, gamma=g, coef0=co, max_iter=max_i)
         curr_model.fit(self.TR_X, self.TR_T)
         print('Using validation data...')
         CL = curr_model.predict(self.VA_X)
@@ -106,7 +176,8 @@ class svm:
         if not self.TRAINED:
             print('Model not trained yet. Call train_and_validate(). Cancelling method.')
             return
-        
+
+        print('Testing...')
         start_time = time.time()
         CL = self.MODEL.predict(self.TE_X)
         self.TEST_ACC = accuracy_score(self.TE_T,CL)

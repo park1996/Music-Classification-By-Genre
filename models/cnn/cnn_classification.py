@@ -13,12 +13,13 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from audio_preprocessor import audio_preprocessor as ap
 from feature_extractor import feature_extractor as fe
+from feature_extractor import feature_type as ft
 
 if __name__ == '__main__':
 
     #Configure the size of training, testing sets and the number of classes we're matching against, and whether we will randomly picking value or sequentially picking value
-    trainingSetSize = 10
-    testingSetSize = 10
+    trainingSetSize = 6400
+    testingSetSize = 800
     classSize = trainingSetSize
     randomize = False
 
