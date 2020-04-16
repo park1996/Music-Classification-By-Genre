@@ -70,6 +70,7 @@ class feature_extractor:
         self.VALIDATION = 'validation'
         self.SUBSET = 'subset'
         self.SMALL = 'small'
+        self.MEDIUM = 'medium'
         self.SPLIT = 'split'
         self.SET = 'set'
         self.TEST = 'test'
@@ -143,9 +144,9 @@ class feature_extractor:
         # Use echonest dataset if required
         if self.USE_ECHONEST_DATASET == True:
             self.dataset = self.tracks.loc[self.tracks.index.intersection([int(i) for i in self.echonest_features.index.tolist()])]
-            self.dataset = self.dataset[self.dataset[self.SET, self.SUBSET] == self.SMALL]
+            self.dataset = self.dataset[self.dataset[self.SET, self.SUBSET] == self.MEDIUM]
         else:
-            self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.SMALL]
+            self.dataset = self.tracks[self.tracks[self.SET, self.SUBSET] == self.MEDIUM]
 
         # Get training, validation, and test datasets
         self.training_dataset = self.dataset[self.dataset[self.SET, self.SPLIT] == self.TRAINING]
