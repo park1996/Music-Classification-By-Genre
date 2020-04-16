@@ -7,6 +7,7 @@ import numpy as np
 import random
 from datetime import datetime
 from sklearn import preprocessing
+from matplotlib import pyplot as plt
 
 PACKAGE_PARENT = '../..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -30,10 +31,11 @@ if __name__ == '__main__':
     trainTrackIDLst = []
     trainTrackIdStrLst = []
     nextClassID = 0
+
     print('Now loading training data...')
 
     #Load the Training data...
-    trainDataLst=myFE.get_features_as_nparray(trainTrackID)
+    trainDataLst=myFE.get_all_features_as_nparray(trainTrackID)
     for id in trainTrackID:
         trackIDStr=str(id)
         currentClass = myFE.get_genre(id)
@@ -53,7 +55,7 @@ if __name__ == '__main__':
     #Load the testing data...
     print('Now loading testing data...')
     testTrackID = myFE.get_validation_dataset_song_ids()
-    testDataLst=myFE.get_features_as_nparray(testTrackID)
+    testDataLst=myFE.get_all_features_as_nparray(testTrackID)
     testTrackIdLst = []
     testTrackIdStrLst = []
     testClassLst = []
@@ -92,7 +94,8 @@ if __name__ == '__main__':
 
     myModel = cnn((num_rows, num_columns, num_channels))
     print('Now training model...')
-    myModel.train(trainData, trainClass)
+    history=myModel.train(trainData, trainClass)
+    acc = history.history['accuracy']
 
     #Evaluate the model using test set. Code modifed based on https://towardsdatascience.com/a-simple-cnn-multi-image-classifier-31c463324fa
     print('Now testing the model we trained...')
@@ -129,3 +132,9 @@ if __name__ == '__main__':
         for j in range(0, len(testTrackIdLst)):
             #print('Track ' + str(testTrackIdLst[j]) + ' has genre ' + testClassStrLst[j] + ' and our model predict it has genre ' + predictedClassesStr[j])
             writer.writerow({'trackID': testTrackIdStrLst[j], 'predictedClass': testPredictedClassesStr[j], 'realClass': testClassStrLst[j], 'correct': str(testPredictedClassesStr[j] == testClassStrLst[j])})
+
+    epochs = range(1, len(acc) + 1)
+    plt.plot(epochs, acc, 'b', label='Training accuracy')
+    plt.title('CNN Training accuracy')
+    plt.legend()
+    plt.show()
