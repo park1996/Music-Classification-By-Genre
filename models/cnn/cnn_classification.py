@@ -6,6 +6,7 @@ from cnn import cnn
 import numpy as np
 import random
 from datetime import datetime
+from matplotlib import pyplot as plt
 
 PACKAGE_PARENT = '../..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -146,7 +147,8 @@ if __name__ == '__main__':
 
     myModel = cnn((num_rows, num_columns, num_channels))
     print('Now training model...')
-    myModel.train(trainData, trainClass)
+    history=myModel.train(trainData, trainClass)
+    acc = history.history['accuracy']
 
     #Evaluate the model using test set. Code modifed based on https://towardsdatascience.com/a-simple-cnn-multi-image-classifier-31c463324fa
     print('Now testing the model we trained...')
@@ -183,3 +185,8 @@ if __name__ == '__main__':
         for j in range(0, len(testTrackIdLst)):
             #print('Track ' + str(testTrackIdLst[j]) + ' has genre ' + testClassStrLst[j] + ' and our model predict it has genre ' + predictedClassesStr[j])
             writer.writerow({'trackID': testTrackIdStrLst[j], 'predictedClass': testPredictedClassesStr[j], 'realClass': testClassStrLst[j], 'correct': str(testPredictedClassesStr[j] == testClassStrLst[j])})
+        epochs = range(1, len(acc) + 1)
+    plt.plot(epochs, acc, 'b', label='Training accuracy (with spectrogram)')
+    plt.title('CNN Training accuracy')
+    plt.legend()
+    plt.show()
