@@ -31,7 +31,7 @@ if __name__ == '__main__':
     RNN_MODEL = RM((num_rows, num_columns), num_rows, num_columns, output_size)
 
     # train
-    RNN_MODEL.train(trainData, trainClassBinLst, 35, 100)
+    RNN_MODEL.train(trainData, trainClassBinLst, 35, 400)
     # validate 
     print("\n Validating")
     score, accuracy = RNN_MODEL.test(trainData, trainClassBinLst)

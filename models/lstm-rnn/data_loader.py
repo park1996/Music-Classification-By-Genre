@@ -17,11 +17,11 @@ from audio_preprocessor import audio_preprocessor as ap
 from feature_extractor import feature_extractor as fe
 from feature_extractor import feature_type as ft
 
+
 # Configure the size of training, testing sets and the number of classes we're matching against, 
 # and whether we will randomly picking value or sequentially picking value
-class data_preprocess:
-    def load_and_format():
-
+class data_preprocessor:
+    def load_and_format(self):
         # data init 
         myAP = ap()
         myFE = fe()
@@ -82,11 +82,11 @@ class data_preprocess:
         num_channels = 1
         scaler = preprocessing.StandardScaler().fit(trainDataLst)
         trainDataLst = scaler.transform(trainDataLst)
-        trainData = trainDataLst.reshape(trainDataLst.shape[0], num_rows, num_columns, num_channels)
+        trainData = trainDataLst.reshape(trainDataLst.shape[0], num_rows, num_columns)
         trainClass = np.array(trainClassLst)
 
         testDataLst = scaler.transform(testDataLst)
-        testData = testDataLst.reshape(testDataLst.shape[0], num_rows, num_columns, num_channels)
+        testData = testDataLst.reshape(testDataLst.shape[0], num_rows, num_columns)
         testClass = np.array(testClassLst)
 
         # Reformatting the data for better training
@@ -95,12 +95,12 @@ class data_preprocess:
         num_channels = 1
         scaler = preprocessing.StandardScaler().fit(trainDataLst)
         trainDataLst = scaler.transform(trainDataLst)
-        trainData = trainDataLst.reshape(trainDataLst.shape[0], num_rows, num_columns, num_channels)
+        trainData = trainDataLst.reshape(trainDataLst.shape[0], num_rows, num_columns)
         trainClass = np.array(trainClassLst)
 
         testDataLst = scaler.transform(testDataLst)
-        testData = testDataLst.reshape(testDataLst.shape[0], num_rows, num_columns, num_channels)
+        testData = testDataLst.reshape(testDataLst.shape[0], num_rows, num_columns)
         testClass = np.array(testClassLst)
         print("data loaded")
-        return trainData, trainClass, testData, testClass
+        return trainData, trainClass, testData, testClass, num_rows, num_columns
 

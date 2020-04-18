@@ -29,7 +29,7 @@ class RNN_MODEL:
         print("finsish initialization")
     
     def train(self, features, target_labels, batch_size, epochs):
-        history = self.model.fit(x=features, y=target_labels, batch_size = 35, epochs = 50)
+        history = self.model.fit(x=features, y=target_labels, batch_size = batch_size, epochs = epochs)
         return history
 
     def test(self, features, target_labels):
