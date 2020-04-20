@@ -14,13 +14,13 @@ class k_means:
         ''' Constructor for this class '''
         np.random.seed(random_seed)
     
-    def initialize_centers(self, features, labels, label_names):
+    def initialize_centers(self, features, labels, label_names, sample_size=10):
         nplabels = np.asarray(labels)
         centers = []
         it = 0
         for label_name in label_names:
             indices = np.array(np.where(nplabels == label_name)[0])
-            rand_centers = features[np.random.choice(indices, 10), :]
+            rand_centers = features[np.random.choice(indices, sample_size), :]
             center = np.mean(rand_centers, axis=0)
             centers.append(center)
         return np.array(centers)
