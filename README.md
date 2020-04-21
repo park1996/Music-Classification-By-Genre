@@ -22,7 +22,7 @@ $ python3 -m unit_test.py
 ```
 
 ## Dataset:
-### Brief
+### Brief:
 * The dataset was taken from the Free Music Archive (FMA): https://github.com/mdeff/fma
 * The dataset consists of 8000 songs and excellent metadata that includes pre-computed features
 
@@ -35,5 +35,30 @@ $ python3 -m unit_test.py
 * A collection of Mel Spectrogram images for the dataset can be found here: [fma_spectrogram.zip](https://drive.google.com/open?id=1mzDKmLba9CooaCL-46H1fmxBD2m4ovhP) - size is 2 GB
 * The dataset is located here: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip) - size is 7.2 GB
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
+### APIs:
+The access the dataset data, please use the following APIs:
+* feature_extractor class:
+
+|Function Name | Description |
+|--------------|-------------|
+|get_all_song_ids |	Get all song IDs in the dataset |
+|get_genre |	Get the genre for a song |
+|get_training_dataset_song_ids |	Get all song IDs in the training dataset |
+|get_validation_dataset_song_ids |	Get all song IDs in the validation dataset |
+|get_test_dataset_song_ids |	Get all song IDs in the test dataset |
+|get_feature |	Get feature for a song |
+|get_features_as_nparray |	Get features and return as a numpy array |
+|get_echonest_features_as_nparray |	Get Echonest features and return as a numpy array|
+
+* audio_preprocessor class:
+
+|Function Name | Description |
+|--------------|-------------|
+| save_mel_spectrogram |	Save mel-scaled spectrogram image to a file |
+| plot_mel_spectrogram |	Plot mel-scaled spectrogram image to a file |
+| get_mel_spectrogram |	Get mel-scaled spectrogram as a numpy array |
+| get_mel_spectrogram_with_cache | Load previously saved spectrogram if it exists. If not, it will generate spectrogram and save it as a file.|
+
+
 
 
