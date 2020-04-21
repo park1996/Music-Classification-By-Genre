@@ -36,7 +36,7 @@ $ python3 -m unit_test.py
 * The dataset is located here: [fma_small.zip](https://os.unil.cloud.switch.ch/fma/fma_small.zip) - size is 7.2 GB
 * Details about the FMA dataset can be found in the official [paper](https://arxiv.org/pdf/1612.01840.pdf)
 ### APIs:
-The access the dataset data, please use the following APIs:
+The access the dataset data, feel free to use the following APIs:
 * feature_extractor class:
 
 |Function Name | Description |
