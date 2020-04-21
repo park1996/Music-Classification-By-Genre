@@ -137,7 +137,7 @@ fe = feature_extractor.feature_extractor(use_echonest_dataset=False)
 #scaler was used to scale each feature to range [0,1]
 scaler = StandardScaler()
 #pca was used to reduced feature dimensions
-pca = PCA(n_components=2)
+pca = PCA(n_components=20)
 
 #get training data and apply scaler and pca
 train_ids = np.asarray(fe.get_training_dataset_song_ids())
@@ -168,7 +168,7 @@ Step 2: K-means Clustering
 km = k_means(RANDOM_SEED)
 
 #generating inertia plot of different initialization strategies
-n_run = 5
+n_run = 20
 n_init_range = np.array([1, 5, 10, 15, 20])
 inertia_plot(n_run, n_init_range, train_features, number_of_clusters, train_genres, all_genre_names, RANDOM_SEED)
 
